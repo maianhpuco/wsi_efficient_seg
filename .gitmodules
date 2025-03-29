@@ -1,0 +1,6 @@
+[submodule "models/includes/efficientvit"]
+	path = models/includes/efficientvit
+	url = git@github.com:maianhpuco/efficientvit.git
+[submodule "models/includes/taming-transformers"]
+	path = models/includes/taming-transformers
+	url = git@github.com:maianhpuco/taming-transformers.git
