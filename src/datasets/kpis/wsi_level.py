@@ -1,51 +1,45 @@
 import os
 
-def generate_tree_with_one_jpg(root, prefix=''):
+def generate_tree_with_one_file(root, prefix=''):
     lines = []
     entries = sorted(os.listdir(root))
     dirs = [e for e in entries if os.path.isdir(os.path.join(root, e))]
-    jpgs = [e for e in entries if e.lower().endswith('.jpg')]
+    files = [e for e in entries if os.path.isfile(os.path.join(root, e))]
 
-    # print subdirectories first
+    # Print directories first
     for i, d in enumerate(dirs):
         path = os.path.join(root, d)
-        connector = "└── " if i == len(dirs) - 1 and not jpgs else "├── "
+        connector = "└── " if i == len(dirs) - 1 and not files else "├── "
         lines.append(f"{prefix}{connector}{d}")
-        extension = "    " if i == len(dirs) - 1 and not jpgs else "│   "
-        lines.extend(generate_tree_with_one_jpg(path, prefix + extension))
+        extension = "    " if i == len(dirs) - 1 and not files else "│   "
+        lines.extend(generate_tree_with_one_file(path, prefix + extension))
 
-    # only print one jpg file if any
-    if jpgs:
+    # Print just one file (if any)
+    if files:
         connector = "└── " if not dirs else "├── "
-        lines.append(f"{prefix}{connector}{jpgs[0]}")
+        lines.append(f"{prefix}{connector}{files[0]}")
 
     return lines
+
  
 if __name__ == "__main__":
     # Example usage
     print("Directory structure of the kidney pathology image dataset:")
     print("----------------------------------------------------------")
-    # Replace with the actual path to your dataset
-    # For example: "datasets/kidney_pathology_image" 
+    # Define path to your dataset and README
     dataset_path = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"
-    # print_tree(data_path)
-        
-    # Define the path to your dataset
-    # dataset_path = 'datasets/kidney_pathology_image'
+    readme_path = 'README.md'
 
-    # Generate the tree structure
-    tree_output = generate_tree_with_one_jpg(dataset_path)
+    # Generate tree
+    tree_lines = generate_tree_with_one_file(dataset_path)
 
-    # Define the path to your README.md file
-    readme_path = './README.md'
+    # Write to README.md
+    with open(readme_path, 'a') as f:
+        f.write("\n## Dataset Directory Structure (Sampled .jpg files)\n")
+        f.write("```\n")
+        f.write(f"{os.path.basename(dataset_path)}\n")
+        for line in tree_lines:
+            f.write(f"{line}\n")
+        f.write("```\n")
 
-    # Append the tree structure to the README.md file
-    with open(readme_path, 'a') as readme_file:
-        readme_file.write('\n## Dataset Directory Structure\n')
-        readme_file.write('```\n')  # Start of code block
-        readme_file.write(tree_output)
-        readme_file.write('```\n')  # End of code block
-
-    print(f"Directory structure has been appended to {readme_path}")
-    
- 
+    print(f"Done! Tree structure with sampled .jpg files appended to {readme_path}") 
