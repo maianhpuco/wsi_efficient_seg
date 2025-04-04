@@ -1,28 +1,28 @@
 import os
 
-def generate_tree_with_one_file(root, prefix=''):
+def generate_tree_with_file_count(root, prefix=''):
     lines = []
     try:
         entries = sorted(os.listdir(root))
     except PermissionError:
-        return lines  # Skip folders we can't access
+        return lines
 
     dirs = [e for e in entries if os.path.isdir(os.path.join(root, e))]
-    files = [e for e in entries if os.path.isfile(os.path.join(root, e))]
+    files = [e for e in entries if os.path.isfile(os.path.join(root, e)) and '.' in e]
 
-    total_items = len(dirs) + (1 if files else 0)
+    total_items = len(dirs)
 
     for i, d in enumerate(dirs):
         is_last = (i == total_items - 1)
         connector = "└── " if is_last else "├── "
         lines.append(f"{prefix}{connector}{d}")
         extension = "    " if is_last else "│   "
-        lines.extend(generate_tree_with_one_file(os.path.join(root, d), prefix + extension))
+        subdir = os.path.join(root, d)
+        lines.extend(generate_tree_with_file_count(subdir, prefix + extension))
 
-    # ✅ Only print one file per folder
+    # ✅ Just print the count of files with extensions in this folder
     if files:
-        connector = "└── "  # Always the last thing printed in a folder
-        lines.append(f"{prefix}{connector}{files[0]}  [example]")
+        lines.append(f"{prefix}└── [Files: {len(files)}]")
 
     return lines
 
@@ -30,16 +30,16 @@ def generate_tree_with_one_file(root, prefix=''):
 dataset_path = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"
 readme_path = "README.md"
 
-# Run
-tree_lines = generate_tree_with_one_file(dataset_path)
+# Generate tree with file counts
+tree_lines = generate_tree_with_file_count(dataset_path)
 
 # Write to README.md
 with open(readme_path, 'a') as f:
-    f.write("\n## Dataset Directory Structure (1 sample file per folder)\n")
+    f.write("\n## Dataset Directory Structure (File counts per folder)\n")
     f.write("```\n")
     f.write(f"{os.path.basename(dataset_path.strip('/'))}\n")
     for line in tree_lines:
         f.write(f"{line}\n")
     f.write("```\n")
 
-print("✅ Only one file per folder printed to README.md")
+print("✅ Folder tree + file counts saved to README.md")
