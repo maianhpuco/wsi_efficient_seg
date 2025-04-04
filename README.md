@@ -19189,3 +19189,632 @@
 │   ├── SYNAPSE_METADATA_MANIFEST.tsv
 ├── SYNAPSE_METADATA_MANIFEST.tsv
 ```
+<<<<<<< Updated upstream
+=======
+
+## Dataset Directory Structure (Sampled .jpg files)
+```
+
+├── test
+│   ├── Task1_patch_level
+│   │   ├── test
+│   │   │   ├── 56Nx
+│   │   │   │   ├── 12-299
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 12-299_110_6144_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 12-299_110_6144_4096_mask.jpg
+│   │   │   │   ├── 12-300
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 12-300_119_3072_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 12-300_119_3072_4096_mask.jpg
+│   │   │   │   └── 12-301
+│   │   │   │       ├── img
+│   │   │   │       │   └── 12-301_100_16384_4096_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 12-301_100_16384_4096_mask.jpg
+│   │   │   ├── DN
+│   │   │   │   ├── 11-362
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-362_100_12288_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-362_100_12288_4096_mask.jpg
+│   │   │   │   ├── 11-363
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-363_114_4096_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-363_114_4096_5120_mask.jpg
+│   │   │   │   └── 11-364
+│   │   │   │       ├── img
+│   │   │   │       │   └── 11-364_103_3072_4096_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 11-364_103_3072_4096_mask.jpg
+│   │   │   ├── NEP25
+│   │   │   │   ├── 18-578
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 18-578_104_4096_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 18-578_104_4096_5120_mask.jpg
+│   │   │   │   ├── 18-579
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 18-579_100_12288_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 18-579_100_12288_4096_mask.jpg
+│   │   │   │   └── 18-580
+│   │   │   │       ├── img
+│   │   │   │       │   └── 18-580_100_4096_4096_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 18-580_100_4096_4096_mask.jpg
+│   │   │   └── normal
+│   │   │       ├── normal_M1574
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_M1574_113_5120_3072_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_M1574_113_5120_3072_mask.jpg
+│   │   │       ├── normal_M1580
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_M1580_100_5120_5120_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_M1580_100_5120_5120_mask.jpg
+│   │   │       └── normal_M1581
+│   │   │           ├── img
+│   │   │           │   └── normal_M1581_100_10240_5120_img.jpg
+│   │   │           └── mask
+│   │   │               └── normal_M1581_100_10240_5120_mask.jpg
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv
+│   ├── Task2_WSI_level
+│   │   ├── 56NX
+│   │   │   └── 12-299_mask.tiff
+│   │   ├── DN
+│   │   │   └── 11-362_mask.tiff
+│   │   ├── NEP25
+│   │   │   └── 18-578_mask.tiff
+│   │   ├── normal
+│   │   │   └── SYNAPSE_METADATA_MANIFEST.tsv
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv
+│   ├── SYNAPSE_METADATA_MANIFEST.tsv
+├── train
+│   ├── Task1_patch_level
+│   │   ├── train
+│   │   │   ├── 56Nx
+│   │   │   │   ├── 12_116
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_116_108_13312_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_116_108_13312_5120_mask.jpg
+│   │   │   │   ├── 12_117
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_117_101_5120_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_117_101_5120_4096_mask.jpg
+│   │   │   │   ├── 12_169
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_169_1006_26624_28672_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_169_1006_26624_28672_mask.jpg
+│   │   │   │   ├── 12_170
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_170_121_5120_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_170_121_5120_4096_mask.jpg
+│   │   │   │   └── 12_171
+│   │   │   │       ├── img
+│   │   │   │       │   └── 56Nx_12_171_100_16384_3072_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 56Nx_12_171_100_16384_3072_mask.jpg
+│   │   │   ├── DN
+│   │   │   │   ├── 11_356
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-356_111_11264_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-356_111_11264_5120_mask.jpg
+│   │   │   │   ├── 11_357
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── DN_11_357_101_13312_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── DN_11_357_101_13312_4096_mask.jpg
+│   │   │   │   ├── 11_358
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-358_101_13312_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-358_101_13312_4096_mask.jpg
+│   │   │   │   ├── 11_367
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── DN_11_367_107_12288_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── DN_11_367_107_12288_5120_mask.jpg
+│   │   │   │   └── 11_370
+│   │   │   │       ├── img
+│   │   │   │       │   └── DN_11_370_108_8192_5120_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── DN_11_370_108_8192_5120_mask.jpg
+│   │   │   ├── NEP25
+│   │   │   │   ├── 08_368_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_368_01_100_8192_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_368_01_100_8192_4096_mask.jpg
+│   │   │   │   ├── 08_368_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_368_02_100_16384_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_368_02_100_16384_4096_mask.jpg
+│   │   │   │   ├── 08_368_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_368_03_107_2048_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_368_03_107_2048_5120_mask.jpg
+│   │   │   │   ├── 08_373_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_373_01_100_15360_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_373_01_100_15360_5120_mask.jpg
+│   │   │   │   ├── 08_373_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_373_02_100_15360_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_373_02_100_15360_5120_mask.jpg
+│   │   │   │   ├── 08_373_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_373_03_100_4096_6144_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_373_03_100_4096_6144_mask.jpg
+│   │   │   │   ├── 08_471_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_471_01_100_0_5120_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_471_01_100_0_5120_mask.jpg
+│   │   │   │   ├── 08_471_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_471_02_100_16384_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_471_02_100_16384_4096_mask.jpg
+│   │   │   │   ├── 08_471_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_471_03_100_16384_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_471_03_100_16384_4096_mask.jpg
+│   │   │   │   ├── 08_472_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_472_01_100_16384_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_472_01_100_16384_4096_mask.jpg
+│   │   │   │   ├── 08_472_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_472_02_100_12288_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_472_02_100_12288_4096_mask.jpg
+│   │   │   │   ├── 08_472_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_472_03_10_10240_0_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_472_03_10_10240_0_mask.jpg
+│   │   │   │   ├── 08_474_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_474_01_100_12288_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_474_01_100_12288_4096_mask.jpg
+│   │   │   │   ├── 08_474_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_474_02_101_1024_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_474_02_101_1024_4096_mask.jpg
+│   │   │   │   └── 08_474_03
+│   │   │   │       ├── img
+│   │   │   │       │   └── 08_474_03_109_14336_5120_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 08_474_03_109_14336_5120_mask.jpg
+│   │   │   └── normal
+│   │   │       ├── normal_F1
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F1_100_12288_4096_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F1_100_12288_4096_mask.jpg
+│   │   │       ├── normal_F1576
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F1576_100_10240_5120_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F1576_100_10240_5120_mask.jpg
+│   │   │       ├── normal_F2
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F2_100_12288_4096_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F2_100_12288_4096_mask.jpg
+│   │   │       ├── normal_F3
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F3_114_10240_4096_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F3_114_10240_4096_mask.jpg
+│   │   │       └── normal_F4
+│   │   │           ├── img
+│   │   │           │   └── normal_F4_102_2048_5120_img.jpg
+│   │   │           └── mask
+│   │   │               └── normal_F4_102_2048_5120_mask.jpg
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv
+│   ├── Task2_WSI_level
+│   │   ├── 56Nx
+│   │   │   └── 12-116_mask.tiff
+│   │   ├── DN
+│   │   │   └── 11-356_mask.tiff
+│   │   ├── NEP25
+│   │   │   └── 08-368_01_mask.tiff
+│   │   ├── normal
+│   │   │   └── SYNAPSE_METADATA_MANIFEST.tsv
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv
+│   ├── SYNAPSE_METADATA_MANIFEST.tsv
+├── validation
+│   ├── Task1_patch_level
+│   │   ├── validation
+│   │   │   ├── 56Nx
+│   │   │   │   ├── 12-173
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 12-173_102_15360_3072_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 12-173_102_15360_3072_mask.jpg
+│   │   │   │   └── 12-174
+│   │   │   │       ├── img
+│   │   │   │       │   └── 12-174_100_19456_3072_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 12-174_100_19456_3072_mask.jpg
+│   │   │   ├── DN
+│   │   │   │   ├── 11-359
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-359_100_8192_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-359_100_8192_4096_mask.jpg
+│   │   │   │   └── 11-361
+│   │   │   │       ├── img
+│   │   │   │       │   └── 11-361_101_11264_5120_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 11-361_101_11264_5120_mask.jpg
+│   │   │   ├── NEP25
+│   │   │   │   ├── 18-575
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 18-575_100_12288_4096_img.jpg
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 18-575_100_12288_4096_mask.jpg
+│   │   │   │   └── 18-577
+│   │   │   │       ├── img
+│   │   │   │       │   └── 18-577_101_13312_4096_img.jpg
+│   │   │   │       └── mask
+│   │   │   │           └── 18-577_101_13312_4096_mask.jpg
+│   │   │   └── normal
+│   │   │       ├── normal_M1
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_M1_100_12288_4096_img.jpg
+│   │   │       │   └── mask
+│   │   │       │       └── normal_M1_100_12288_4096_mask.jpg
+│   │   │       └── normal_M2
+│   │   │           ├── img
+│   │   │           │   └── normal_M2_100_12288_4096_img.jpg
+│   │   │           └── mask
+│   │   │               └── normal_M2_100_12288_4096_mask.jpg
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv
+│   ├── Task2_WSI_level
+│   │   ├── 56Nx
+│   │   │   └── 12-173_mask.tiff
+│   │   ├── DN
+│   │   │   └── 11-359_mask.tiff
+│   │   ├── NEP25
+│   │   │   └── 18-575_mask.tiff
+│   │   ├── normal
+│   │   │   └── SYNAPSE_METADATA_MANIFEST.tsv
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv
+│   ├── SYNAPSE_METADATA_MANIFEST.tsv
+├── SYNAPSE_METADATA_MANIFEST.tsv
+```
+>>>>>>> Stashed changes
+
+## Dataset Directory Structure (1 sample file per folder)
+```
+kidney_pathology_image
+├── test
+│   ├── Task1_patch_level
+│   │   ├── test
+│   │   │   ├── 56Nx
+│   │   │   │   ├── 12-299
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 12-299_110_6144_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 12-299_110_6144_4096_mask.jpg  [example]
+│   │   │   │   ├── 12-300
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 12-300_119_3072_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 12-300_119_3072_4096_mask.jpg  [example]
+│   │   │   │   └── 12-301
+│   │   │   │       ├── img
+│   │   │   │       │   └── 12-301_100_16384_4096_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 12-301_100_16384_4096_mask.jpg  [example]
+│   │   │   ├── DN
+│   │   │   │   ├── 11-362
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-362_100_12288_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-362_100_12288_4096_mask.jpg  [example]
+│   │   │   │   ├── 11-363
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-363_114_4096_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-363_114_4096_5120_mask.jpg  [example]
+│   │   │   │   └── 11-364
+│   │   │   │       ├── img
+│   │   │   │       │   └── 11-364_103_3072_4096_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 11-364_103_3072_4096_mask.jpg  [example]
+│   │   │   ├── NEP25
+│   │   │   │   ├── 18-578
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 18-578_104_4096_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 18-578_104_4096_5120_mask.jpg  [example]
+│   │   │   │   ├── 18-579
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 18-579_100_12288_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 18-579_100_12288_4096_mask.jpg  [example]
+│   │   │   │   └── 18-580
+│   │   │   │       ├── img
+│   │   │   │       │   └── 18-580_100_4096_4096_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 18-580_100_4096_4096_mask.jpg  [example]
+│   │   │   └── normal
+│   │   │       ├── normal_M1574
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_M1574_113_5120_3072_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_M1574_113_5120_3072_mask.jpg  [example]
+│   │   │       ├── normal_M1580
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_M1580_100_5120_5120_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_M1580_100_5120_5120_mask.jpg  [example]
+│   │   │       └── normal_M1581
+│   │   │           ├── img
+│   │   │           │   └── normal_M1581_100_10240_5120_img.jpg  [example]
+│   │   │           └── mask
+│   │   │               └── normal_M1581_100_10240_5120_mask.jpg  [example]
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   ├── Task2_WSI_level
+│   │   ├── 56NX
+│   │   │   └── 12-299_mask.tiff  [example]
+│   │   ├── DN
+│   │   │   └── 11-362_mask.tiff  [example]
+│   │   ├── NEP25
+│   │   │   └── 18-578_mask.tiff  [example]
+│   │   ├── normal
+│   │   │   └── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+├── train
+│   ├── Task1_patch_level
+│   │   ├── train
+│   │   │   ├── 56Nx
+│   │   │   │   ├── 12_116
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_116_108_13312_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_116_108_13312_5120_mask.jpg  [example]
+│   │   │   │   ├── 12_117
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_117_101_5120_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_117_101_5120_4096_mask.jpg  [example]
+│   │   │   │   ├── 12_169
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_169_1006_26624_28672_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_169_1006_26624_28672_mask.jpg  [example]
+│   │   │   │   ├── 12_170
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 56Nx_12_170_121_5120_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 56Nx_12_170_121_5120_4096_mask.jpg  [example]
+│   │   │   │   └── 12_171
+│   │   │   │       ├── img
+│   │   │   │       │   └── 56Nx_12_171_100_16384_3072_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 56Nx_12_171_100_16384_3072_mask.jpg  [example]
+│   │   │   ├── DN
+│   │   │   │   ├── 11_356
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-356_111_11264_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-356_111_11264_5120_mask.jpg  [example]
+│   │   │   │   ├── 11_357
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── DN_11_357_101_13312_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── DN_11_357_101_13312_4096_mask.jpg  [example]
+│   │   │   │   ├── 11_358
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-358_101_13312_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-358_101_13312_4096_mask.jpg  [example]
+│   │   │   │   ├── 11_367
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── DN_11_367_107_12288_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── DN_11_367_107_12288_5120_mask.jpg  [example]
+│   │   │   │   └── 11_370
+│   │   │   │       ├── img
+│   │   │   │       │   └── DN_11_370_108_8192_5120_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── DN_11_370_108_8192_5120_mask.jpg  [example]
+│   │   │   ├── NEP25
+│   │   │   │   ├── 08_368_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_368_01_100_8192_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_368_01_100_8192_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_368_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_368_02_100_16384_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_368_02_100_16384_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_368_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_368_03_107_2048_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_368_03_107_2048_5120_mask.jpg  [example]
+│   │   │   │   ├── 08_373_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_373_01_100_15360_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_373_01_100_15360_5120_mask.jpg  [example]
+│   │   │   │   ├── 08_373_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_373_02_100_15360_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_373_02_100_15360_5120_mask.jpg  [example]
+│   │   │   │   ├── 08_373_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_373_03_100_4096_6144_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_373_03_100_4096_6144_mask.jpg  [example]
+│   │   │   │   ├── 08_471_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_471_01_100_0_5120_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_471_01_100_0_5120_mask.jpg  [example]
+│   │   │   │   ├── 08_471_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_471_02_100_16384_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_471_02_100_16384_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_471_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_471_03_100_16384_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_471_03_100_16384_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_472_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_472_01_100_16384_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_472_01_100_16384_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_472_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_472_02_100_12288_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_472_02_100_12288_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_472_03
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_472_03_10_10240_0_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_472_03_10_10240_0_mask.jpg  [example]
+│   │   │   │   ├── 08_474_01
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_474_01_100_12288_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_474_01_100_12288_4096_mask.jpg  [example]
+│   │   │   │   ├── 08_474_02
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 08_474_02_101_1024_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 08_474_02_101_1024_4096_mask.jpg  [example]
+│   │   │   │   └── 08_474_03
+│   │   │   │       ├── img
+│   │   │   │       │   └── 08_474_03_109_14336_5120_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 08_474_03_109_14336_5120_mask.jpg  [example]
+│   │   │   └── normal
+│   │   │       ├── normal_F1
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F1_100_12288_4096_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F1_100_12288_4096_mask.jpg  [example]
+│   │   │       ├── normal_F1576
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F1576_100_10240_5120_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F1576_100_10240_5120_mask.jpg  [example]
+│   │   │       ├── normal_F2
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F2_100_12288_4096_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F2_100_12288_4096_mask.jpg  [example]
+│   │   │       ├── normal_F3
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_F3_114_10240_4096_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_F3_114_10240_4096_mask.jpg  [example]
+│   │   │       └── normal_F4
+│   │   │           ├── img
+│   │   │           │   └── normal_F4_102_2048_5120_img.jpg  [example]
+│   │   │           └── mask
+│   │   │               └── normal_F4_102_2048_5120_mask.jpg  [example]
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   ├── Task2_WSI_level
+│   │   ├── 56Nx
+│   │   │   └── 12-116_mask.tiff  [example]
+│   │   ├── DN
+│   │   │   └── 11-356_mask.tiff  [example]
+│   │   ├── NEP25
+│   │   │   └── 08-368_01_mask.tiff  [example]
+│   │   ├── normal
+│   │   │   └── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+├── validation
+│   ├── Task1_patch_level
+│   │   ├── validation
+│   │   │   ├── 56Nx
+│   │   │   │   ├── 12-173
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 12-173_102_15360_3072_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 12-173_102_15360_3072_mask.jpg  [example]
+│   │   │   │   └── 12-174
+│   │   │   │       ├── img
+│   │   │   │       │   └── 12-174_100_19456_3072_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 12-174_100_19456_3072_mask.jpg  [example]
+│   │   │   ├── DN
+│   │   │   │   ├── 11-359
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 11-359_100_8192_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 11-359_100_8192_4096_mask.jpg  [example]
+│   │   │   │   └── 11-361
+│   │   │   │       ├── img
+│   │   │   │       │   └── 11-361_101_11264_5120_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 11-361_101_11264_5120_mask.jpg  [example]
+│   │   │   ├── NEP25
+│   │   │   │   ├── 18-575
+│   │   │   │   │   ├── img
+│   │   │   │   │   │   └── 18-575_100_12288_4096_img.jpg  [example]
+│   │   │   │   │   └── mask
+│   │   │   │   │       └── 18-575_100_12288_4096_mask.jpg  [example]
+│   │   │   │   └── 18-577
+│   │   │   │       ├── img
+│   │   │   │       │   └── 18-577_101_13312_4096_img.jpg  [example]
+│   │   │   │       └── mask
+│   │   │   │           └── 18-577_101_13312_4096_mask.jpg  [example]
+│   │   │   └── normal
+│   │   │       ├── normal_M1
+│   │   │       │   ├── img
+│   │   │       │   │   └── normal_M1_100_12288_4096_img.jpg  [example]
+│   │   │       │   └── mask
+│   │   │       │       └── normal_M1_100_12288_4096_mask.jpg  [example]
+│   │   │       └── normal_M2
+│   │   │           ├── img
+│   │   │           │   └── normal_M2_100_12288_4096_img.jpg  [example]
+│   │   │           └── mask
+│   │   │               └── normal_M2_100_12288_4096_mask.jpg  [example]
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   ├── Task2_WSI_level
+│   │   ├── 56Nx
+│   │   │   └── 12-173_mask.tiff  [example]
+│   │   ├── DN
+│   │   │   └── 11-359_mask.tiff  [example]
+│   │   ├── NEP25
+│   │   │   └── 18-575_mask.tiff  [example]
+│   │   ├── normal
+│   │   │   └── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   │   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+│   ├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+├── SYNAPSE_METADATA_MANIFEST.tsv  [example]
+```

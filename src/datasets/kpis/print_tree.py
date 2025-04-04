@@ -10,7 +10,7 @@ def generate_tree_with_one_file(root, prefix=''):
     dirs = [e for e in entries if os.path.isdir(os.path.join(root, e))]
     files = [e for e in entries if os.path.isfile(os.path.join(root, e))]
 
-    # Print subdirectories
+    # Print subdirectories first
     for i, d in enumerate(dirs):
         path = os.path.join(root, d)
         is_last = (i == len(dirs) - 1 and not files)
@@ -21,12 +21,13 @@ def generate_tree_with_one_file(root, prefix=''):
 
     # Only print one file (if any)
     if files:
+        first_file = files[0]
         connector = "└── " if not dirs else "├── "
-        lines.append(f"{prefix}{connector}{files[0]}  [example]")
+        lines.append(f"{prefix}{connector}{first_file}  [example]")
 
     return lines
 
-# ✅ Your specified dataset path
+# ✅ Your dataset path
 dataset_path = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"
 readme_path = 'README.md'
 
@@ -42,4 +43,4 @@ with open(readme_path, 'a') as f:
         f.write(f"{line}\n")
     f.write("```\n")
 
-print(f"✅ Wrote tree with one file per folder to {readme_path}")
+print("✅ Wrote clean tree with just one file per folder.")
