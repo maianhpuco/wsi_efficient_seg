@@ -5,33 +5,32 @@ def generate_tree_with_one_file(root, prefix=''):
     try:
         entries = sorted(os.listdir(root))
     except PermissionError:
-        return lines  # skip folders we can't access
+        return lines  # Skip folders we can't access
 
     dirs = [e for e in entries if os.path.isdir(os.path.join(root, e))]
     files = [e for e in entries if os.path.isfile(os.path.join(root, e))]
 
-    # Print subdirectories first
+    total_items = len(dirs) + (1 if files else 0)
+
     for i, d in enumerate(dirs):
-        path = os.path.join(root, d)
-        is_last = (i == len(dirs) - 1 and not files)
+        is_last = (i == total_items - 1)
         connector = "└── " if is_last else "├── "
         lines.append(f"{prefix}{connector}{d}")
         extension = "    " if is_last else "│   "
-        lines.extend(generate_tree_with_one_file(path, prefix + extension))
+        lines.extend(generate_tree_with_one_file(os.path.join(root, d), prefix + extension))
 
-    # Only print one file (if any)
+    # ✅ Only print one file per folder
     if files:
-        first_file = files[0]
-        connector = "└── " if not dirs else "├── "
-        lines.append(f"{prefix}{connector}{first_file}  [example]")
+        connector = "└── "  # Always the last thing printed in a folder
+        lines.append(f"{prefix}{connector}{files[0]}  [example]")
 
     return lines
 
-# ✅ Your dataset path
+# Paths
 dataset_path = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"
-readme_path = 'README.md'
+readme_path = "README.md"
 
-# Generate the tree
+# Run
 tree_lines = generate_tree_with_one_file(dataset_path)
 
 # Write to README.md
@@ -43,4 +42,4 @@ with open(readme_path, 'a') as f:
         f.write(f"{line}\n")
     f.write("```\n")
 
-print("✅ Wrote clean tree with just one file per folder.")
+print("✅ Only one file per folder printed to README.md")
