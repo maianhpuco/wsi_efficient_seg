@@ -1,5 +1,11 @@
 import os 
-from torch.utils.data import DataLoader 
+import sys
+
+# Dynamically set PROJECT_DIR to the project root (parent of experiments/)
+PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PROJECT_DIR not in sys.path:
+    sys.path.append(PROJECT_DIR)
+
 from src.datasets.kpis.wsi_level import WSIDataset, get_wsi_dataloader 
 # from src .datasets.kpis.patch_level import PatchDataset 
 if __name__ == "__main__": 
