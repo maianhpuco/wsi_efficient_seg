@@ -1,18 +1,25 @@
 import os
 
-def generate_tree(directory, prefix=''):
-    """Recursively generates a tree structure of the given directory."""
-    entries = sorted(os.listdir(directory))
-    tree_structure = ''
-    for index, entry in enumerate(entries):
-        path = os.path.join(directory, entry)
-        connector = '└── ' if index == len(entries) - 1 else '├── '
-        tree_structure += f"{prefix}{connector}{entry}\n"
-        if os.path.isdir(path):
-            extension = '    ' if index == len(entries) - 1 else '│   '
-            tree_structure += generate_tree(path, prefix=prefix + extension)
-    return tree_structure
+def generate_tree_with_one_jpg(root, prefix=''):
+    lines = []
+    entries = sorted(os.listdir(root))
+    dirs = [e for e in entries if os.path.isdir(os.path.join(root, e))]
+    jpgs = [e for e in entries if e.lower().endswith('.jpg')]
 
+    # print subdirectories first
+    for i, d in enumerate(dirs):
+        path = os.path.join(root, d)
+        connector = "└── " if i == len(dirs) - 1 and not jpgs else "├── "
+        lines.append(f"{prefix}{connector}{d}")
+        extension = "    " if i == len(dirs) - 1 and not jpgs else "│   "
+        lines.extend(generate_tree_with_one_jpg(path, prefix + extension))
+
+    # only print one jpg file if any
+    if jpgs:
+        connector = "└── " if not dirs else "├── "
+        lines.append(f"{prefix}{connector}{jpgs[0]}")
+
+    return lines
  
 if __name__ == "__main__":
     # Example usage
@@ -27,7 +34,7 @@ if __name__ == "__main__":
     # dataset_path = 'datasets/kidney_pathology_image'
 
     # Generate the tree structure
-    tree_output = generate_tree(dataset_path)
+    tree_output = generate_tree_with_one_jpg(dataset_path)
 
     # Define the path to your README.md file
     readme_path = './README.md'
