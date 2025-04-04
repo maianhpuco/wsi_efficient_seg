@@ -4,3 +4,9 @@
 [submodule "models/includes/taming-transformers"]
 	path = models/includes/taming-transformers
 	url = git@github.com:maianhpuco/taming-transformers.git
+[submodule "src/includes/efficientvit"]
+	path = src/includes/efficientvit
+	url = https://github.com/mit-han-lab/efficientvit.git
+[submodule "src/includes/taming-transformers"]
+	path = src/includes/taming-transformers
+	url = https://github.com/CompVis/taming-transformers.git
