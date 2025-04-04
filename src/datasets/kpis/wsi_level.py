@@ -1,87 +1,93 @@
 import os
+from glob import glob
+import torch
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 import torchvision.transforms as transforms
+import matplotlib.pyplot as plt
+import numpy as np
 
 class WSIDataset(Dataset):
-    def __init__(self, root_dir, split='train', transform=None):
+    def __init__(self, data_dir, transform=None, mask_transform=None):
         """
         Args:
-            root_dir (str): Root directory of the dataset (kidney_pathology_image)
-            split (str): 'train', 'test', or 'validation'
+            data_dir (str): Directory containing the WSI data (e.g., '/input_slide/')
             transform: PyTorch transforms for the images
+            mask_transform: PyTorch transforms for the masks (if different)
         """
-        self.root_dir = root_dir
-        self.split = split
+        self.data_dir = data_dir
         self.transform = transform
+        self.mask_transform = mask_transform or transform  # Use same transform if mask_transform not provided
         
-        # Path to Task2_WSI_level for the given split
-        self.wsi_dir = os.path.join(root_dir, split, 'Task2_WSI_level')
+        # Collect image and mask paths (similar to your main function)
+        image = []
+        seg = []
+        types = glob(os.path.join(data_dir, '*'))
+        for type in types:
+            now_imgs = glob(os.path.join(type, 'img', '*.tiff'))  # Assuming input is TIFF as in your code
+            image.extend(now_imgs)
+            now_lbls = glob(os.path.join(type, 'mask', '*mask.tiff'))
+            seg.extend(now_lbls)
+
+        self.images = sorted(image)
+        self.segs = sorted(seg)
         
-        # Supported image extensions
-        self.image_extensions = {'.jpg', '.png', '.tiff', '.jpeg'}
+        if len(self.images) != len(self.segs):
+            raise ValueError(f"Number of images ({len(self.images)}) and masks ({len(self.segs)}) do not match!")
         
-        # Categories (56Nx, DN, NEP25, normal)
-        self.categories = ['56Nx', 'DN', 'NEP25', 'normal']
-        self.category_to_idx = {cat: idx for idx, cat in enumerate(self.categories)}
-        
-        # Collect all image paths and their labels
-        self.image_paths = []
-        self.labels = []
-        
-        for category in self.categories:
-            category_dir = os.path.join(self.wsi_dir, category)
-            if not os.path.exists(category_dir):
-                continue
-                
-            for file_name in os.listdir(category_dir):
-                if os.path.splitext(file_name)[1].lower() in self.image_extensions:
-                    self.image_paths.append(os.path.join(category_dir, file_name))
-                    self.labels.append(self.category_to_idx[category])
-        
-        print(f"Loaded {len(self.image_paths)} WSI images from {split} split")
+        print(f"Loaded {len(self.images)} WSI images from {data_dir}")
 
     def __len__(self):
-        return len(self.image_paths)
+        return len(self.images)
 
     def __getitem__(self, idx):
         # Load image
-        img_path = self.image_paths[idx]
-        image = Image.open(img_path).convert('RGB')
+        img_path = self.images[idx]
+        image = Image.open(img_path).convert('RGB')  # Convert TIFF to RGB
         
-        # Apply transforms if provided
+        # Load mask
+        mask_path = self.segs[idx]
+        mask = Image.open(mask_path).convert('L')  # 'L' mode for grayscale mask
+        
+        # Apply transforms
         if self.transform:
             image = self.transform(image)
-            
-        # Get label
-        label = self.labels[idx]
+        if self.mask_transform:
+            mask = self.mask_transform(mask)
         
-        return image, label
+        return image, mask
 
-def get_wsi_dataloader(root_dir, split='train', batch_size=4, shuffle=True, num_workers=2):
+def get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0):
     """
     Create a DataLoader for WSI-level data
     
     Args:
-        root_dir (str): Root directory of the dataset
-        split (str): 'train', 'test', or 'validation'
-        batch_size (int): Batch size for the DataLoader
+        data_dir (str): Directory containing the WSI data
+        batch_size (int): Batch size for the DataLoader (default 1 due to large WSI size)
         shuffle (bool): Whether to shuffle the data
         num_workers (int): Number of workers for loading data
     
     Returns:
         DataLoader object
     """
-    # Define transforms
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),  # Adjust size as needed
-        transforms.ToTensor(),
+    # Define transforms for images
+    image_transform = transforms.Compose([
+        transforms.ToTensor(),  # Convert to tensor
         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                            std=[0.229, 0.224, 0.225])  # ImageNet normalization
     ])
     
+    # Define transforms for masks (no normalization needed)
+    mask_transform = transforms.Compose([
+        transforms.ToTensor()
+    ])
+    
     # Create dataset
-    dataset = WSIDataset(root_dir=root_dir, split=split, transform=transform)
+    dataset = WSIDataset(
+        data_dir=data_dir,
+        transform=image_transform,
+        mask_transform=mask_transform
+    )
     
     # Create DataLoader
     dataloader = DataLoader(
@@ -89,22 +95,35 @@ def get_wsi_dataloader(root_dir, split='train', batch_size=4, shuffle=True, num_
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
-        pin_memory=True  # Faster data transfer to GPU if available
+        pin_memory=torch.cuda.is_available()  # Faster data transfer to GPU if available
     )
     
     return dataloader
 
 # Example usage
 if __name__ == "__main__":
-    dataset_path = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"
+    data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"  
     
-    # Create dataloaders for all splits
-    train_loader = get_wsi_dataloader(dataset_path, split='train', batch_size=4)
-    test_loader = get_wsi_dataloader(dataset_path, split='test', batch_size=4)
-    val_loader = get_wsi_dataloader(dataset_path, split='validation', batch_size=4)
+    wsi_loader = get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0)
     
-    # Example: Iterate through one batch
-    for images, labels in train_loader:
-        print(f"Batch shape: {images.shape}")  # [batch_size, channels, height, width]
-        print(f"Labels: {labels}")
-        break
+    # Test the DataLoader
+    for images, masks in wsi_loader:
+        print(f"Image batch shape: {images.shape}")  # [batch_size, channels, height, width]
+        print(f"Mask batch shape: {masks.shape}")    # [batch_size, 1, height, width]
+        
+        # Optionally visualize the first image and mask
+        img = images[0].permute(1, 2, 0).numpy()  # Convert to HWC for visualization
+        mask = masks[0][0].numpy()  # Remove channel dim for mask
+        print("Check the shape of img and mask")
+        print(img.shape, mask.shape)
+        
+        # plt.figure(figsize=(10, 5))
+        # plt.subplot(1, 2, 1)
+        # plt.imshow(img)
+        # plt.title("WSI Image")
+        # plt.subplot(1, 2, 2)
+        # plt.imshow(mask, cmap='gray')
+        # plt.title("Mask")
+        # plt.show()
+        
+        break  # Only process one batch for testing
