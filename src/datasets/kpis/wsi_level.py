@@ -97,6 +97,8 @@ if __name__ == "__main__":
     data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
     img_path_example = '/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level/normal/normal_F3_wsi.tiff'
     image = tifffile.imread(img_path_example, key=0) 
+    print("Image shape:", image.shape)
+     
     # dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
 
     # for img, mask in dataloader:
