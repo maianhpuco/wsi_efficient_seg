@@ -96,7 +96,10 @@ class WSIPatchDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
         img = Image.open(img_path).convert("RGB")
-        img_vqgan = preprocess(img, target_image_size=self.target_size, map_dalle=False)
+        
+        img_vqgan = preprocess(
+            img, target_image_size=self.target_size, map_dalle=False)
+        
         # img_dalle = preprocess(img, target_image_size=self.target_size, map_dalle=True)
         return img_vqgan, os.path.basename(img_path)
 
@@ -119,7 +122,7 @@ def encode_patches(dataloader, model32x32, encoder_dalle=None, save_dir=None):
     for batch_idx, (img_vqgan, filenames) in enumerate(tqdm(dataloader, desc="Encoding patches")):
     # for batch_idx, (img_vqgan, img_dalle, filenames) in enumerate(dataloader):
         img_vqgan = img_vqgan.to(DEVICE)
-        
+        print("img_vqgan shape: ", img_vqgan.shape)
         # Encode with VQ-GAN models
         z_32x32, indices_32x32 = encode_with_vqgan(preprocess_vqgan(img_vqgan), model32x32)
         
@@ -137,8 +140,38 @@ def encode_patches(dataloader, model32x32, encoder_dalle=None, save_dir=None):
             torch.save(indices_32x32[i], os.path.join(save_dir, f"{base_name}_vqgan_32x32_indices.pt"))
 
         print(f"Processed batch {batch_idx + 1}/{len(dataloader)}")
-        break 
+        break
+     
+def main(args):
+    config32x32 = load_config(f"{vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
+    model32x32 = load_vqgan(
+        config32x32, 
+        ckpt_path=f"{vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
+        is_gumbel=True).to(DEVICE)
+
+
+    # Dataset and DataLoader
+    data_dir = config["data_dir"]
+    if args.train_test_val not in ["train", "test", "val"]:
+        raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
+
+    patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
+    save_dir = os.path.join(config[f"{args.train_test_val}_feature_dir"])
     
+    dataset = WSIPatchDataset(patch_dir, target_size=256)  # Adjust size as needed
+    
+    dataloader = DataLoader(
+        dataset,
+        batch_size=4,
+        shuffle=False,
+        num_workers=4,
+        pin_memory=torch.cuda.is_available()
+    )
+
+    # Encode patches
+    encode_patches(dataloader, model32x32, save_dir=save_dir)
+    print("Encoding complete")
+     
 if __name__ == "__main__":
     torch.set_grad_enabled(False)
 
@@ -168,31 +201,5 @@ if __name__ == "__main__":
         raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
     
     vqgan_logs_dir = config.get('vqgan_logs_dir')
-    config32x32 = load_config(f"{vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
-    model32x32 = load_vqgan(
-        config32x32, 
-        ckpt_path=f"{vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
-        is_gumbel=True).to(DEVICE)
-
-
-    # Dataset and DataLoader
-    data_dir = config["data_dir"]
-    if args.train_test_val not in ["train", "test", "val"]:
-        raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
-
-    patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
-    save_dir = os.path.join(config[f"{args.train_test_val}_feature_dir"])
     
-    dataset = WSIPatchDataset(patch_dir, target_size=256)  # Adjust size as needed
-    
-    dataloader = DataLoader(
-        dataset,
-        batch_size=4,
-        shuffle=False,
-        num_workers=4,
-        pin_memory=torch.cuda.is_available()
-    )
-
-    # Encode patches
-    encode_patches(dataloader, model32x32, save_dir=save_dir)
-    print("Encoding complete")
+    main(args) 
