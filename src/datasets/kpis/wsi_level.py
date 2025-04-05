@@ -97,7 +97,7 @@ if __name__ == "__main__":
     data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
     dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
 
-    for img, mask in dataloader:
-        print("Image shape:", img.shape)
-        print("Mask shape:", mask.shape)
-        break
+    # for img, mask in dataloader:
+    #     print("Image shape:", img.shape)
+    #     print("Mask shape:", mask.shape)
+    #     break
