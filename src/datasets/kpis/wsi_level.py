@@ -102,7 +102,7 @@ def get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0):
 
 # Example usage
 if __name__ == "__main__":
-    data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/"  
+    data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/"  
     
     wsi_loader = get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0)
     
