@@ -1,4 +1,5 @@
 import os
+import sys 
 from glob import glob
 import yaml
 import torch
@@ -14,7 +15,13 @@ import torch.nn.functional as F
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset, DataLoader
+# Add project root to sys.path
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.append(PROJECT_ROOT)
+print(f"Project root added to sys.path: {PROJECT_ROOT}") 
+
 from src.datasets.kpis.patch_2048_2048 import WSIPatch2048Dataset 
+
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"DEVICE: {DEVICE}")
