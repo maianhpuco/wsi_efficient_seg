@@ -7,7 +7,7 @@ from tqdm import tqdm
 from omegaconf import OmegaConf
 from taming.models.vqgan import VQModel, GumbelVQ
 import io
-import requests
+
 import PIL
 from PIL import Image
 import numpy as np
@@ -135,7 +135,7 @@ def encode_patches(dataloader, model32x32, encoder_dalle=None, save_dir=None):
 if __name__ == "__main__":
     torch.set_grad_enabled(False)
 
-    # Argument parser
+    # Argument parserte 
     parser = argparse.ArgumentParser(description="Encode WSI patches with VQ-GAN and DALL-E")
     parser.add_argument("--config", type=str, default="configs/main_vqqan_effvit_kpi_slide.yaml", help="Path to YAML config file")
     parser.add_argument("--data_config", type=str, default="configs/kpis.yaml", help="Path to YAML config file")
