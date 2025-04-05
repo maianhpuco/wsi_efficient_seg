@@ -1,79 +1,47 @@
 import os
 from glob import glob
 import torch
-from monai.transforms import Compose, Resize, ScaleIntensity, EnsureChannelFirst, ToTensor
-from monai.data import ArrayDataset, create_test_image_2d, decollate_batch, DataLoader 
-import tifffile
-# import scipy.ndimage as ndi
-import numpy as np
-from skimage.transform import resize
- 
+from torch.utils.data import Dataset, DataLoader
 from PIL import Image
-import os
-import time
-from tqdm import tqdm 
-import scipy.ndimage as ndi
+import torchvision.transforms as transforms
+import yaml
+import argparse
 
-# from skimage.transform import resize
-class WSITIFFDataset(Dataset):
-    def __init__(self, data_dir, transform=None, mask_transform=None, resize_factor=0.5):
+class WSIPatchDataset(Dataset):
+    def __init__(self, patch_dir, transform=None, mask_transform=None):
         """
         Args:
-            data_dir (str): Root directory containing folders with 'img/*.tiff' and 'mask/*mask.tiff'
-            transform: MONAI transforms for image
-            mask_transform: MONAI transforms for mask
-            resize_factor: Resizing factor for TIFF image downsampling
+            patch_dir (str): Directory containing pre-extracted WSI patches.
+            transform (callable, optional): Transforms for images.
+            mask_transform (callable, optional): Transforms for masks.
         """
-        self.image_paths = []
-        self.mask_paths = []
+        self.patch_dir = patch_dir
         self.transform = transform
-        self.mask_transform = mask_transform if mask_transform else transform
-        self.resize_factor = resize_factor
+        self.mask_transform = mask_transform or transform  # Default to image transform if not provided
 
-        types = glob(os.path.join(data_dir, '*'))
-        
-        for folder in types:
-            self.image_paths.extend(glob(os.path.join(folder, '*_wsi.tiff')))
-            self.mask_paths.extend(glob(os.path.join(folder, '*_mask.tiff')))
+        # Find all image patches
+        self.image_paths = sorted(glob(os.path.join(patch_dir, "**/*_img.png"), recursive=True))
+        self.mask_paths = [p.replace("_img.png", "_mask.png") for p in self.image_paths]
 
-        self.image_paths = sorted(self.image_paths)
-        self.mask_paths = sorted(self.mask_paths)
+        # Validate that each image has a corresponding mask
+        missing_masks = [p for p, m in zip(self.image_paths, self.mask_paths) if not os.path.exists(m)]
+        if missing_masks:
+            raise ValueError(f"Missing mask files for: {missing_masks[:5]} (and possibly more)")
 
-        assert len(self.image_paths) == len(self.mask_paths), f"Mismatch: {len(self.image_paths)} images, {len(self.mask_paths)} masks"
+        print(f"Loaded {len(self.image_paths)} patch pairs from {patch_dir}")
 
     def __len__(self):
         return len(self.image_paths)
 
-    def load_and_resize_tiff(self, path, level=1, is_mask=False):
-        # Load the first page from multi-page TIFF
-        image = tifffile.imread(path, key=0)
-        print("tiff image shape", image.shape)
-        # Apply zoom (scipy.ndimage.zoom) for resizing
-        zoom_factor = self.resize_factor
-        # if is_mask:
-        #     image = resize(image, 
-        #                 (int(image.shape[0] * zoom_factor), int(image.shape[1] * zoom_factor)),
-        #                 order=0, preserve_range=True, anti_aliasing=False).astype(image.dtype)
-        # else:
-        #     image = resize(image, 
-        #                 (int(image.shape[0] * zoom_factor), int(image.shape[1] * zoom_factor), image.shape[2]),
-        #                 order=1, preserve_range=True, anti_aliasing=True).astype(image.dtype)
-        
-        # print(f"Loading {path} with zoom factor {zoom_factor}")
-        
-        if is_mask:
-            image = ndi.zoom(image, (zoom_factor, zoom_factor), order=0)  # nearest neighbor for masks
-        else:
-            image = ndi.zoom(image, (zoom_factor, zoom_factor, 1), order=1)  # bilinear for RGB
-        
-        return image.astype(np.float32)
-
     def __getitem__(self, idx):
-        image = self.load_and_resize_tiff(self.image_paths[idx], is_mask=False)
-        mask = self.load_and_resize_tiff(self.mask_paths[idx], is_mask=True)
-        
-        print("----shape of the image and mask----", image.shape, mask.shape)
-        
+        # Load image
+        img_path = self.image_paths[idx]
+        image = Image.open(img_path).convert("RGB")  # Load as RGB
+
+        # Load mask
+        mask_path = self.mask_paths[idx]
+        mask = Image.open(mask_path).convert("L")  # Load as grayscale
+
         # Apply transforms
         if self.transform:
             image = self.transform(image)
@@ -82,81 +50,80 @@ class WSITIFFDataset(Dataset):
 
         return image, mask
 
+def get_wsi_patch_dataloader(patch_dir, batch_size=4, shuffle=True, num_workers=4, transform=None, mask_transform=None):
+    """
+    Create a DataLoader for WSI patches.
+    
+    Args:
+        patch_dir (str): Directory with pre-extracted patches.
+        batch_size (int): Batch size for DataLoader.
+        shuffle (bool): Whether to shuffle the data.
+        num_workers (int): Number of worker processes for data loading.
+        transform (callable, optional): Transforms for images.
+        mask_transform (callable, optional): Transforms for masks.
+    
+    Returns:
+        DataLoader: PyTorch DataLoader for the patch dataset.
+    """
+    # Default transforms if none provided
+    if transform is None:
+        transform = transforms.Compose([
+            transforms.ToTensor(),  # Convert to tensor (0-1 range)
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # ImageNet normalization
+        ])
+    if mask_transform is None:
+        mask_transform = transforms.Compose([
+            transforms.ToTensor()  # Convert to tensor (0-1 range)
+        ])
 
-def get_monai_tiff_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0):
-    # Define MONAI-compatible transforms
-    image_transforms = Compose([
-        EnsureChannelFirst(),
-        Resize((512, 512)),
-        ScaleIntensity(),
-        ToTensor()
-    ])
+    # Create dataset
+    dataset = WSIPatchDataset(patch_dir, transform=transform, mask_transform=mask_transform)
 
-    mask_transforms = Compose([
-        EnsureChannelFirst(),
-        Resize((512, 512)),
-        ToTensor()
-    ])
-
-    dataset = WSITIFFDataset(data_dir, transform=image_transforms, mask_transform=mask_transforms)
-
-    loader = torch.utils.data.DataLoader(
+    # Create DataLoader
+    dataloader = DataLoader(
         dataset,
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
-        pin_memory=torch.cuda.is_available()
+        pin_memory=torch.cuda.is_available()  # Faster data transfer to GPU if available
+    )
+    return dataloader
+
+if __name__ == "__main__":
+    # Argument parser for config and train/test/val split
+    parser = argparse.ArgumentParser(description="Load WSI patch dataset")
+    parser.add_argument("--config", type=str, default="configs/kpis.yaml", help="Path to YAML config file")
+    parser.add_argument("--train_test_val", type=str, default="train", help="Specify train/test/val")
+    args = parser.parse_args()
+
+    # Load config from YAML
+    with open(args.config, 'r') as f:
+        config = yaml.safe_load(f)
+
+    # Validate required config keys
+    required_keys = ["data_dir", f"{args.train_test_val}_wsi_processed_patch_save_dir"]
+    missing_keys = [key for key in required_keys if key not in config]
+    if missing_keys:
+        raise KeyError(f"Missing required config keys: {missing_keys}")
+
+    # Validate train_test_val argument
+    if args.train_test_val not in ["train", "test", "val"]:
+        raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
+
+    # Get patch directory
+    patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
+
+    # Create DataLoader
+    dataloader = get_wsi_patch_dataloader(
+        patch_dir,
+        batch_size=4,
+        shuffle=True,
+        num_workers=4
     )
 
-    return loader
-
-#  Example usage
-if __name__ == "__main__": 
-    print("Loading dataset...") 
-    data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
-    
-    # img_path_example = '/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level/normal/normal_F3_wsi.tiff'
-    # image = tifffile.imread(img_path_example, key=0) 
-    # print("Image shape:", image.shape)
- 
-    # dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
-
-    # for img, mask in dataloader:
-    #     print("Image shape:", img.shape)
-    #     print("Mask shape:", mask.shape)
-    #     break
-    
-    # print("Loading dataset...")
-
-    data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
-    save_dir = "processing_datasets/wsi_example"
-    os.makedirs(save_dir, exist_ok=True)
-
-    dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
-
-    for idx, (img, mask) in enumerate(tqdm(dataloader, desc="Processing first image")):
-        start_time = time.time()
-
-        # Remove batch and channel dimensions for saving
-        img_np = img[0].permute(1, 2, 0).cpu().numpy()  # [H, W, C]
-        mask_np = mask[0][0].cpu().numpy()  # [H, W]
-
-        print("Image shape:", img_np.shape)
-        print("Mask shape:", mask_np.shape)
-
-        # Load original file name from dataset
-        image_path = dataloader.dataset.image_paths[idx]
-        mask_path = dataloader.dataset.mask_paths[idx]
-        base_img_name = os.path.basename(image_path).replace(".tiff", ".png")
-        base_mask_name = os.path.basename(mask_path).replace(".tiff", ".png")
-
-        # Save resized versions
-        Image.fromarray((img_np * 255).astype(np.uint8)).save(os.path.join(save_dir, base_img_name))
-        Image.fromarray((mask_np * 255).astype(np.uint8)).save(os.path.join(save_dir, base_mask_name))
-
-        elapsed = time.time() - start_time
-        print(f"⏱ Load + save time: {elapsed:.2f} seconds")
-        break  # only process the first one 
-    
-    
-# tiff image shape (33606, 37614, 3)
+    # Test the DataLoader
+    for i, (images, masks) in enumerate(dataloader):
+        print(f"Batch {i + 1}:")
+        print(f"  Image shape: {images.shape}")  # e.g., [4, 3, 2048, 2048]
+        print(f"  Mask shape: {masks.shape}")    # e.g., [4, 1, 2048, 2048]
+        break  # Just test one batch

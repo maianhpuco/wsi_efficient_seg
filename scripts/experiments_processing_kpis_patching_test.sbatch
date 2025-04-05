@@ -8,4 +8,4 @@
 
 python experiments/processing/kpis_patching.py --config configs/kpis.yaml --train_test_val test
 
-conda deactivate
+conda deactivate 
