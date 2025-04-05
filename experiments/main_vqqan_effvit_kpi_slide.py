@@ -35,7 +35,7 @@ def load_model(path, device):
     else:
         with open(path, 'rb') as f:
             buf = io.BytesIO(f.read())
-    return torch.load(buf, map_location=device, weights_only=False)
+    return torch.load(buf, map_location=device)
 
 def load_config(config_path, display=False):
     config = OmegaConf.load(config_path)
@@ -49,7 +49,7 @@ def load_vqgan(config, ckpt_path=None, is_gumbel=False):
     else:
         model = VQModel(**config.model.params)
     if ckpt_path is not None:
-        sd = torch.load(ckpt_path, map_location="cpu", weights_only=False)["state_dict"]
+        sd = torch.load(ckpt_path, map_location="cpu")["state_dict"]
         missing, unexpected = model.load_state_dict(sd, strict=False)
     return model.eval()
 
