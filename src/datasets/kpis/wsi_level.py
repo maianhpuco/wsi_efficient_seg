@@ -92,6 +92,7 @@ def get_monai_tiff_dataloader(data_dir, batch_size=1, shuffle=False, num_workers
 
 #  Example usage
 if __name__ == "__main__": 
+    print("Loading dataset...") 
     data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
     dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
 
