@@ -58,6 +58,16 @@ def preprocess_vqgan(x):
     x = 2. * x - 1.
     return x
 
+# def preprocess(img, target_image_size=256, map_dalle=True):
+#     s = min(img.size)
+#     if s < target_image_size:
+#         raise ValueError(f'min dim for image {s} < {target_image_size}')
+#     r = target_image_size / s
+#     s = (round(r * img.size[1]), round(r * img.size[0]))
+#     img = TF.resize(img, s, interpolation=PIL.Image.LANCZOS)
+#     img = TF.center_crop(img, output_size=2 * [target_image_size])
+#     img = torch.unsqueeze(T.ToTensor()(img), 0)
+#     return img
 def preprocess(img, target_image_size=256, map_dalle=True):
     s = min(img.size)
     if s < target_image_size:
@@ -66,11 +76,10 @@ def preprocess(img, target_image_size=256, map_dalle=True):
     s = (round(r * img.size[1]), round(r * img.size[0]))
     img = TF.resize(img, s, interpolation=PIL.Image.LANCZOS)
     img = TF.center_crop(img, output_size=2 * [target_image_size])
-    img = torch.unsqueeze(T.ToTensor()(img), 0)
-    if map_dalle:
-        img = map_pixels(img)
+    img = T.ToTensor()(img)
     return img
-
+ 
+ 
 # Dataset for WSI patches
 class WSIPatchDataset(Dataset):
     def __init__(self, patch_dir, target_size=256):
