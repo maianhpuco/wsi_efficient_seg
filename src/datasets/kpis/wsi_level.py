@@ -26,12 +26,12 @@ class WSIDataset(Dataset):
         print(types)
         for type in types:
             now_imgs = glob(os.path.join(type, '*_wsi.tiff'))  # Assuming input is TIFF as in your code
-            print("------ now imgs ---------")
-            print(len(now_imgs))
+            # print("------ now imgs ---------")
+            # print(len(now_imgs))
             image.extend(now_imgs)
             now_lbls = glob(os.path.join(type, '*_mask.tiff'))
-            print("------ now lbls ---------") 
-            print(len(now_lbls))
+            # print("------ now lbls ---------") 
+            # print(len(now_lbls))
             seg.extend(now_lbls)
 
         self.images = sorted(image)
@@ -108,22 +108,22 @@ def get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0):
 # Example usage
 if __name__ == "__main__":
     data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"  
-    dataset = WSIDataset(
-        data_dir=data_dir,
-        transform=None,
-        mask_transform=None
-    )
-    # wsi_loader = get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0)
+    # dataset = WSIDataset(
+    #     data_dir=data_dir,
+    #     transform=None,
+    #     mask_transform=None
+    # )
+    wsi_loader = get_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=0)
     
-    # # Test the DataLoader
-    # for images, masks in wsi_loader:
-    #     print(f"Image batch shape: {images.shape}")  # [batch_size, channels, height, width]
-    #     print(f"Mask batch shape: {masks.shape}")    # [batch_size, 1, height, width]
+    # Test the DataLoader
+    for images, masks in wsi_loader:
+        print(f"Image batch shape: {images.shape}")  # [batch_size, channels, height, width]
+        print(f"Mask batch shape: {masks.shape}")    # [batch_size, 1, height, width]
         
-    #     # Optionally visualize the first image and mask
-    #     img = images[0].permute(1, 2, 0).numpy()  # Convert to HWC for visualization
-    #     mask = masks[0][0].numpy()  # Remove channel dim for mask
-    #     print("Check the shape of img and mask")
-    #     print(img.shape, mask.shape)
+        # Optionally visualize the first image and mask
+        img = images[0].permute(1, 2, 0).numpy()  # Convert to HWC for visualization
+        mask = masks[0][0].numpy()  # Remove channel dim for mask
+        print("Check the shape of img and mask")
+        print(img.shape, mask.shape)
         
-    #     break  # Only process one batch for testing
+        break  # Only process one batch for testing
