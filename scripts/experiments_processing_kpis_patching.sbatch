@@ -4,9 +4,6 @@
 #SBATCH --time=24:00:00
 #SBATCH --mem=64G
 #SBATCH --cpus-per-task=4
-#SBATCH --partition=general
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
 
 module load python/3.10
 module load conda
