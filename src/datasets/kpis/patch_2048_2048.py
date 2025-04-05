@@ -40,5 +40,8 @@ class WSIPatch2048Dataset(Dataset):
         if self.target_size != 2048:
             img_tensor = TF.resize(img_tensor, [self.target_size, self.target_size], interpolation=T.InterpolationMode.BILINEAR)
             mask_tensor = TF.resize(mask_tensor, [self.target_size, self.target_size], interpolation=T.InterpolationMode.NEAREST)
-
-        return img_tensor, mask_tensor  # Both are tensors now
+        
+        filename = os.path.basename(img_path)
+        return img_tensor, mask_tensor, filename 
+    
+        # return img_tensor, mask_tensor  # Both are tensors now
