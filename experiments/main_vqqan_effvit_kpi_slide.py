@@ -160,7 +160,10 @@ if __name__ == "__main__":
     
     vqgan_logs_dir = config.get('vqgan_logs_dir')
     config32x32 = load_config(f"{vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
-    model32x32 = load_vqgan(config32x32, ckpt_path="logs/vqgan_gumbel_f8/checkpoints/last.ckpt", is_gumbel=True).to(DEVICE)
+    model32x32 = load_vqgan(
+        config32x32, 
+        ckpt_path=f"{vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
+        is_gumbel=True).to(DEVICE)
 
 
     # Dataset and DataLoader
