@@ -23,9 +23,10 @@ class WSITIFFDataset(Dataset):
         self.resize_factor = resize_factor
 
         types = glob(os.path.join(data_dir, '*'))
+        
         for folder in types:
-            self.image_paths.extend(glob(os.path.join(folder, 'img', '*.tiff')))
-            self.mask_paths.extend(glob(os.path.join(folder, 'mask', '*mask.tiff')))
+            self.image_paths.extend(glob(os.path.join(folder, '*_wsi.tiff')))
+            self.mask_paths.extend(glob(os.path.join(folder, '*_mask.tiff')))
 
         self.image_paths = sorted(self.image_paths)
         self.mask_paths = sorted(self.mask_paths)
