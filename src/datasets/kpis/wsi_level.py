@@ -1,8 +1,8 @@
 import os
 from glob import glob
 import torch
-from torch.utils.data import Dataset
 from monai.transforms import Compose, Resize, ScaleIntensity, EnsureChannelFirst, ToTensor
+from monai.data import ArrayDataset, create_test_image_2d, decollate_batch, DataLoader 
 import tifffile
 # import scipy.ndimage as ndi
 import numpy as np
@@ -13,6 +13,7 @@ import os
 import time
 from tqdm import tqdm 
 import scipy.ndimage as ndi
+
 # from skimage.transform import resize
 class WSITIFFDataset(Dataset):
     def __init__(self, data_dir, transform=None, mask_transform=None, resize_factor=0.5):
@@ -113,6 +114,7 @@ def get_monai_tiff_dataloader(data_dir, batch_size=1, shuffle=False, num_workers
 if __name__ == "__main__": 
     print("Loading dataset...") 
     data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
+    
     # img_path_example = '/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level/normal/normal_F3_wsi.tiff'
     # image = tifffile.imread(img_path_example, key=0) 
     # print("Image shape:", image.shape)
@@ -155,3 +157,6 @@ if __name__ == "__main__":
         elapsed = time.time() - start_time
         print(f"⏱ Load + save time: {elapsed:.2f} seconds")
         break  # only process the first one 
+    
+    
+# tiff image shape (33606, 37614, 3)
