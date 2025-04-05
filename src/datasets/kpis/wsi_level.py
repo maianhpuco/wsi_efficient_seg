@@ -32,45 +32,43 @@ def get_monai_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=
     for folder in types:
         image_paths.extend(glob(os.path.join(folder, '*_wsi.tiff')))
         mask_paths.extend(glob(os.path.join(folder, '*_mask.tiff')))
-    
         
     print("Len of image and mask: ", len(image_paths), len(mask_paths)) 
     
-    
-    image_paths = sorted(image_paths)
-    mask_paths = sorted(mask_paths)
+    # image_paths = sorted(image_paths)
+    # mask_paths = sorted(mask_paths)
 
-    assert len(image_paths) == len(mask_paths), f"Found {len(image_paths)} images and {len(mask_paths)} masks"
+    # assert len(image_paths) == len(mask_paths), f"Found {len(image_paths)} images and {len(mask_paths)} masks"
 
-    # Define MONAI transforms
-    image_transforms = Compose([
-        LoadImage(image_only=True),
-        EnsureChannelFirst(),
-        Resize((512, 512)),
-        ScaleIntensity(),
-        ToTensor()
-    ])
+    # # Define MONAI transforms
+    # image_transforms = Compose([
+    #     LoadImage(image_only=True),
+    #     EnsureChannelFirst(),
+    #     Resize((512, 512)),
+    #     ScaleIntensity(),
+    #     ToTensor()
+    # ])
 
-    mask_transforms = Compose([
-        LoadImage(image_only=True),
-        EnsureChannelFirst(),
-        Resize((512, 512)),
-        ToTensor()
-    ])
+    # mask_transforms = Compose([
+    #     LoadImage(image_only=True),
+    #     EnsureChannelFirst(),
+    #     Resize((512, 512)),
+    #     ToTensor()
+    # ])
 
-    # Create MONAI dataset
-    dataset = ArrayDataset(image_paths, image_transforms, mask_paths, mask_transforms)
+    # # Create MONAI dataset
+    # dataset = ArrayDataset(image_paths, image_transforms, mask_paths, mask_transforms)
 
-    # Create MONAI DataLoader
-    dataloader = DataLoader(
-        dataset,
-        batch_size=batch_size,
-        shuffle=shuffle,
-        num_workers=num_workers,
-        pin_memory=torch.cuda.is_available()
-    )
+    # # Create MONAI DataLoader
+    # dataloader = DataLoader(
+    #     dataset,
+    #     batch_size=batch_size,
+    #     shuffle=shuffle,
+    #     num_workers=num_workers,
+    #     pin_memory=torch.cuda.is_available()
+    # )
 
-    return dataloader
+    # return dataloader
 
 
 # Test run
