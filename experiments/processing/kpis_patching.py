@@ -118,7 +118,6 @@ def extract_and_save_patches(wsi_dir, save_dir, log_dir, patch_size=2048, stride
         json.dump(log_data, f, indent=4)
     print(f"Log saved to {log_file}")
 
-
 if __name__ == "__main__":
     # Argument parser for YAML config file
     parser = argparse.ArgumentParser(description="Extract patches from WSI TIFFs")
@@ -128,21 +127,28 @@ if __name__ == "__main__":
     # Load config from YAML
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
-    
-    data_dir = config["data_dir"] 
+
+    # Validate required config keys
+    required_keys = ["data_dir", "train_wsi_dir", "train_wsi_processed_patch_save_dir"]
+    missing_keys = [key for key in required_keys if key not in config]
+    if missing_keys:
+        raise KeyError(f"Missing required config keys: {missing_keys}")
+
+    data_dir = config["data_dir"]
     train_wsi_dir = config["train_wsi_dir"]
-    
     train_wsi_processed_patch_save_dir = config["train_wsi_processed_patch_save_dir"]
     
-    log_dir = os.path.join(data_dir, 'logs', 'kpis_patching')  # Default to "logs" if not specified
+    # Use log_dir from config if provided, otherwise default to data_dir/logs/kpis_patching
+    log_dir = config.get("log_dir", os.path.join(data_dir, "logs", "kpis_patching"))
     
     # Create the save directory if it doesn't exist
     os.makedirs(train_wsi_processed_patch_save_dir, exist_ok=True)
     
     # Run the extraction with logging
     extract_and_save_patches(
-        train_wsi_dir, 
-        train_wsi_processed_patch_save_dir, 
-        log_dir, 
-        patch_size=2048, 
-        stride=1024) 
+        train_wsi_dir,
+        train_wsi_processed_patch_save_dir,
+        log_dir,
+        patch_size=2048,
+        stride=1024
+    )
