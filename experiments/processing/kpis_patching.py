@@ -122,6 +122,7 @@ if __name__ == "__main__":
     # Argument parser for YAML config file
     parser = argparse.ArgumentParser(description="Extract patches from WSI TIFFs")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to YAML config file")
+    parser.add_argument("--train_test_val", type=str, default="train", help="Specify train/test/val")
     args = parser.parse_args()
 
     # Load config from YAML
@@ -135,19 +136,23 @@ if __name__ == "__main__":
         raise KeyError(f"Missing required config keys: {missing_keys}")
 
     data_dir = config["data_dir"]
-    train_wsi_dir = config["train_wsi_dir"]
-    train_wsi_processed_patch_save_dir = config["train_wsi_processed_patch_save_dir"]
-    
+    if args.train_test_val not in ["train", "test", "val"]:
+        raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
+
+    wsi_dir = config[f"{args.train_test_val}_wsi_dir"]
+    wsi_processed_patch_save_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
+   
+    print("train_test_val must be one of 'train', 'test', or 'val'")
     # Use log_dir from config if provided, otherwise default to data_dir/logs/kpis_patching
-    log_dir = config.get("log_dir", os.path.join(data_dir, "logs", "kpis_patching"))
-    
+    log_dir = config.get("log_dir", os.path.join(data_dir, "logs", f"{args.train_test_val}_kpis_patching"))
+
     # Create the save directory if it doesn't exist
-    os.makedirs(train_wsi_processed_patch_save_dir, exist_ok=True)
-    
+    os.makedirs(wsi_processed_patch_save_dir, exist_ok=True)
+
     # Run the extraction with logging
     extract_and_save_patches(
-        train_wsi_dir,
-        train_wsi_processed_patch_save_dir,
+        wsi_dir,
+        wsi_processed_patch_save_dir,
         log_dir,
         patch_size=2048,
         stride=1024
