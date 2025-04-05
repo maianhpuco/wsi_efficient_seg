@@ -25,11 +25,11 @@ class WSIDataset(Dataset):
         types = glob(os.path.join(data_dir, '*'))
         print(types)
         for type in types:
-            now_imgs = glob(os.path.join(type, 'img', '*.tiff'))  # Assuming input is TIFF as in your code
+            now_imgs = glob(os.path.join(type, '*_wsi.tiff'))  # Assuming input is TIFF as in your code
             print("------ now imgs ---------")
             print(now_imgs[0])
             image.extend(now_imgs)
-            now_lbls = glob(os.path.join(type, 'mask', '*mask.tiff'))
+            now_lbls = glob(os.path.join(type, '*_mask.tiff'))
             print("------ now lbls ---------") 
             print(now_lbls[0])
             seg.extend(now_lbls)
