@@ -4,9 +4,10 @@ import torch
 from torch.utils.data import Dataset
 from monai.transforms import Compose, Resize, ScaleIntensity, EnsureChannelFirst, ToTensor
 import tifffile
-import scipy.ndimage as ndi
+# import scipy.ndimage as ndi
 import numpy as np
-
+from skimage.transform import resize
+ 
 from PIL import Image
 import os
 import time
@@ -47,11 +48,21 @@ class WSITIFFDataset(Dataset):
 
         # Apply zoom (scipy.ndimage.zoom) for resizing
         zoom_factor = self.resize_factor
-        print(f"Loading {path} with zoom factor {zoom_factor}")
         if is_mask:
-            image = ndi.zoom(image, (zoom_factor, zoom_factor), order=0)  # nearest neighbor for masks
+            image = resize(image, 
+                        (int(image.shape[0] * zoom_factor), int(image.shape[1] * zoom_factor)),
+                        order=0, preserve_range=True, anti_aliasing=False).astype(image.dtype)
         else:
-            image = ndi.zoom(image, (zoom_factor, zoom_factor, 1), order=1)  # bilinear for RGB
+            image = resize(image, 
+                        (int(image.shape[0] * zoom_factor), int(image.shape[1] * zoom_factor), image.shape[2]),
+                        order=1, preserve_range=True, anti_aliasing=True).astype(image.dtype)
+        
+                print(f"Loading {path} with zoom factor {zoom_factor}")
+        
+        # if is_mask:
+        #     image = ndi.zoom(image, (zoom_factor, zoom_factor), order=0)  # nearest neighbor for masks
+        # else:
+        #     image = ndi.zoom(image, (zoom_factor, zoom_factor, 1), order=1)  # bilinear for RGB
         return image.astype(np.float32)
 
     def __getitem__(self, idx):
