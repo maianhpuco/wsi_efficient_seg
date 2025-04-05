@@ -15,9 +15,9 @@ import torch.nn.functional as F
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset, DataLoader
-from dall_e import map_pixels, unmap_pixels
-from dall_e.encoder import Encoder
-from dall_e.decoder import Decoder
+# from dall_e import map_pixels, unmap_pixels
+# from dall_e.encoder import Encoder
+# from dall_e.decoder import Decoder
 from torch.serialization import add_safe_globals
 
 add_safe_globals([Encoder, Decoder])
