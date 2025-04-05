@@ -51,7 +51,9 @@ class WSITIFFDataset(Dataset):
     def __getitem__(self, idx):
         image = self.load_and_resize_tiff(self.image_paths[idx], is_mask=False)
         mask = self.load_and_resize_tiff(self.mask_paths[idx], is_mask=True)
-
+        
+        print("----shape of the image and mask----", image.shape, mask.shape)
+        
         # Apply transforms
         if self.transform:
             image = self.transform(image)
