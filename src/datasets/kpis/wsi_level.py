@@ -27,11 +27,11 @@ class WSIDataset(Dataset):
         for type in types:
             now_imgs = glob(os.path.join(type, '*_wsi.tiff'))  # Assuming input is TIFF as in your code
             print("------ now imgs ---------")
-            print(now_imgs[0])
+            print(len(now_imgs))
             image.extend(now_imgs)
             now_lbls = glob(os.path.join(type, '*_mask.tiff'))
             print("------ now lbls ---------") 
-            print(now_lbls[0])
+            print(len(now_lbls))
             seg.extend(now_lbls)
 
         self.images = sorted(image)
