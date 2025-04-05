@@ -7,6 +7,11 @@ import tifffile
 import scipy.ndimage as ndi
 import numpy as np
 
+from PIL import Image
+import os
+import time
+from tqdm import tqdm 
+
 class WSITIFFDataset(Dataset):
     def __init__(self, data_dir, transform=None, mask_transform=None, resize_factor=0.5):
         """
@@ -99,9 +104,41 @@ if __name__ == "__main__":
     # image = tifffile.imread(img_path_example, key=0) 
     # print("Image shape:", image.shape)
  
+    # dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
+
+    # for img, mask in dataloader:
+    #     print("Image shape:", img.shape)
+    #     print("Mask shape:", mask.shape)
+    #     break
+    
+    # print("Loading dataset...")
+
+    data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
+    save_dir = "processing_datasets/wsi_example"
+    os.makedirs(save_dir, exist_ok=True)
+
     dataloader = get_monai_tiff_dataloader(data_dir, batch_size=1)
 
-    for img, mask in dataloader:
-        print("Image shape:", img.shape)
-        print("Mask shape:", mask.shape)
-        break
+    for idx, (img, mask) in enumerate(tqdm(dataloader, desc="Processing first image")):
+        start_time = time.time()
+
+        # Remove batch and channel dimensions for saving
+        img_np = img[0].permute(1, 2, 0).cpu().numpy()  # [H, W, C]
+        mask_np = mask[0][0].cpu().numpy()  # [H, W]
+
+        print("Image shape:", img_np.shape)
+        print("Mask shape:", mask_np.shape)
+
+        # Load original file name from dataset
+        image_path = dataloader.dataset.image_paths[idx]
+        mask_path = dataloader.dataset.mask_paths[idx]
+        base_img_name = os.path.basename(image_path).replace(".tiff", ".png")
+        base_mask_name = os.path.basename(mask_path).replace(".tiff", ".png")
+
+        # Save resized versions
+        Image.fromarray((img_np * 255).astype(np.uint8)).save(os.path.join(save_dir, base_img_name))
+        Image.fromarray((mask_np * 255).astype(np.uint8)).save(os.path.join(save_dir, base_mask_name))
+
+        elapsed = time.time() - start_time
+        print(f"⏱ Load + save time: {elapsed:.2f} seconds")
+        break  # only process the first one 
