@@ -6,4 +6,4 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --gres=gpu:1
 
-python src/datasets/kpis/wsi_patch_dataset.py --config configs/kpis.yaml --train_test_val train
+python src/datasets/kpis/wsi_level.py --config configs/kpis.yaml --train_test_val train
