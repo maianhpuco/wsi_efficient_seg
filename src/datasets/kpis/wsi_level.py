@@ -76,7 +76,7 @@ if __name__ == "__main__":
     data_dir = "/project/hnguyen2/mvu9/datasets/kidney_pathology_image/train/Task2_WSI_level"
     dataloader = get_monai_wsi_dataloader(data_dir, batch_size=1)
 
-    for images, masks in dataloader:
-        print(f"Image batch shape: {images.shape}")
-        print(f"Mask batch shape: {masks.shape}")
-        break
+    # for images, masks in dataloader:
+    #     print(f"Image batch shape: {images.shape}")
+    #     print(f"Mask batch shape: {masks.shape}")
+    #     break
