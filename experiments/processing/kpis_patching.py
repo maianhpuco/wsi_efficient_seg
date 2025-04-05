@@ -22,7 +22,7 @@ def extract_and_save_patches(wsi_dir, save_dir, log_dir, patch_size=2048, stride
     # Get all WSI image files
     image_paths = sorted(glob(os.path.join(wsi_dir, "**/*_wsi.tiff"), recursive=True))
     total_images = len(image_paths)
-    
+    print("Total images found:", total_images)
     # Initialize log data
     log_data = {
         "run_timestamp": datetime.datetime.now().isoformat(),
