@@ -45,7 +45,7 @@ class WSITIFFDataset(Dataset):
     def load_and_resize_tiff(self, path, level=1, is_mask=False):
         # Load the first page from multi-page TIFF
         image = tifffile.imread(path, key=0)
-
+        print("tiff image shape", image.shape)
         # Apply zoom (scipy.ndimage.zoom) for resizing
         zoom_factor = self.resize_factor
         if is_mask:
