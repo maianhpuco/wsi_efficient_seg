@@ -16,7 +16,7 @@ import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset, DataLoader
 # Add project root to sys.path
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 
