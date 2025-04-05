@@ -3,6 +3,7 @@ from glob import glob
 import yaml
 import torch
 import argparse
+from tqdm import tqdm 
 from omegaconf import OmegaConf
 from taming.models.vqgan import VQModel, GumbelVQ
 import io
@@ -106,19 +107,14 @@ def encode_with_dalle(x, encoder):
     return z
 
 # Main encoding pipeline
-def encode_patches(dataloader, model32x32, model1024, model16384, encoder_dalle, save_dir):
+def encode_patches(dataloader, model32x32, encoder_dalle=None, save_dir=None):
     os.makedirs(save_dir, exist_ok=True)
-    for batch_idx, (img_vqgan, img_dalle, filenames) in enumerate(dataloader):
+    for batch_idx, (img_vqgan, img_dalle, filenames) in enumerate(tqdm(dataloader, desc="Encoding patches")):
+    # for batch_idx, (img_vqgan, img_dalle, filenames) in enumerate(dataloader):
         img_vqgan = img_vqgan.to(DEVICE)
-        # img_dalle = img_dalle.to(DEVICE)
         
         # Encode with VQ-GAN models
         z_32x32, indices_32x32 = encode_with_vqgan(preprocess_vqgan(img_vqgan), model32x32)
-        # z_1024, indices_1024 = encode_with_vqgan(preprocess_vqgan(img_vqgan), model1024)
-        # z_16384, indices_16384 = encode_with_vqgan(preprocess_vqgan(img_vqgan), model16384)
-        
-        # Encode with DALL-E
-        z_dalle = encode_with_dalle(img_dalle, encoder_dalle)
         
         # Save latent representations
         for i, filename in enumerate(filenames):
@@ -132,54 +128,53 @@ def encode_patches(dataloader, model32x32, model1024, model16384, encoder_dalle,
             
             torch.save(z_32x32[i], os.path.join(save_dir, f"{base_name}_vqgan_32x32.pt"))
             torch.save(indices_32x32[i], os.path.join(save_dir, f"{base_name}_vqgan_32x32_indices.pt"))
-            
-            # torch.save(z_1024[i], os.path.join(save_dir, f"{base_name}_vqgan_1024.pt"))
-            # torch.save(indices_1024[i], os.path.join(save_dir, f"{base_name}_vqgan_1024_indices.pt"))
-            # torch.save(z_16384[i], os.path.join(save_dir, f"{base_name}_vqgan_16384.pt"))
-            # torch.save(indices_16384[i], os.path.join(save_dir, f"{base_name}_vqgan_16384_indices.pt"))
-            # torch.save(z_dalle[i], os.path.join(save_dir, f"{base_name}_dalle.pt"))
-        
-        print(f"Processed batch {batch_idx + 1}/{len(dataloader)}")
 
+        print(f"Processed batch {batch_idx + 1}/{len(dataloader)}")
+        break 
+    
 if __name__ == "__main__":
     torch.set_grad_enabled(False)
 
     # Argument parser
     parser = argparse.ArgumentParser(description="Encode WSI patches with VQ-GAN and DALL-E")
-    parser.add_argument("--config", type=str, default="configs/kpis.yaml", help="Path to YAML config file")
+    parser.add_argument("--config", type=str, default="configs/main_vqqan_effvit_kpi_slide.yaml", help="Path to YAML config file")
+    parser.add_argument("--data_config", type=str, default="configs/kpis.yaml", help="Path to YAML config file")
     parser.add_argument("--train_test_val", type=str, default="train", help="Specify train/test/val")
+    
     args = parser.parse_args()
 
     # Load config from YAML
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
-
+    with open(args.data_config, 'r') as f:
+        config.update(yaml.safe_load(f))
+        
+        
     # Validate config keys
     required_keys = ["data_dir", f"{args.train_test_val}_wsi_processed_patch_save_dir"]
+    
     missing_keys = [key for key in required_keys if key not in config]
     if missing_keys:
         raise KeyError(f"Missing required config keys: {missing_keys}")
 
     if args.train_test_val not in ["train", "test", "val"]:
         raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
-
-    # Load models
-    config32x32 = load_config("logs/vqgan_gumbel_f8/configs/model.yaml", display=False)
-    config1024 = load_config("logs/vqgan_imagenet_f16_1024/configs/model.yaml", display=False)
-    config16384 = load_config("logs/vqgan_imagenet_f16_16384/configs/model.yaml", display=False)
-
-    model32x32 = load_vqgan(config32x32, ckpt_path="logs/vqgan_gumbel_f8/checkpoints/last.ckpt", is_gumbel=True).to(DEVICE)
-    # model1024 = load_vqgan(config1024, ckpt_path="logs/vqgan_imagenet_f16_1024/checkpoints/last.ckpt").to(DEVICE)
-    # model16384 = load_vqgan(config16384, ckpt_path="logs/vqgan_imagenet_f16_16384/checkpoints/last.ckpt").to(DEVICE)
     
-    encoder_dalle = load_model("https://cdn.openai.com/dall-e/encoder.pkl", DEVICE)
-    # decoder_dalle = load_model("https://cdn.openai.com/dall-e/decoder.pkl", DEVICE)  # Loaded but not used here
+    vqgan_logs_dir = config.get('vqgan_logs_dir')
+    config32x32 = load_config(f"{vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
+    model32x32 = load_vqgan(config32x32, ckpt_path="logs/vqgan_gumbel_f8/checkpoints/last.ckpt", is_gumbel=True).to(DEVICE)
+
 
     # Dataset and DataLoader
+    data_dir = config["data_dir"]
+    if args.train_test_val not in ["train", "test", "val"]:
+        raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
+
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
-    save_dir = os.path.join(config["data_dir"], "encoded_patches", args.train_test_val)
+    save_dir = os.path.join(config[f"{args.train_test_val}_feature_dir"])
     
     dataset = WSIPatchDataset(patch_dir, target_size=256)  # Adjust size as needed
+    
     dataloader = DataLoader(
         dataset,
         batch_size=4,
@@ -189,5 +184,5 @@ if __name__ == "__main__":
     )
 
     # Encode patches
-    encode_patches(dataloader, model32x32, model1024, model16384, encoder_dalle, save_dir)
+    encode_patches(dataloader, model32x32, save_dir=save_dir)
     print("Encoding complete")
