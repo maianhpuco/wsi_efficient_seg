@@ -57,12 +57,13 @@ class WSITIFFDataset(Dataset):
                         (int(image.shape[0] * zoom_factor), int(image.shape[1] * zoom_factor), image.shape[2]),
                         order=1, preserve_range=True, anti_aliasing=True).astype(image.dtype)
         
-                print(f"Loading {path} with zoom factor {zoom_factor}")
+        print(f"Loading {path} with zoom factor {zoom_factor}")
         
         # if is_mask:
         #     image = ndi.zoom(image, (zoom_factor, zoom_factor), order=0)  # nearest neighbor for masks
         # else:
         #     image = ndi.zoom(image, (zoom_factor, zoom_factor, 1), order=1)  # bilinear for RGB
+        
         return image.astype(np.float32)
 
     def __getitem__(self, idx):
