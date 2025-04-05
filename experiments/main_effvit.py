@@ -62,7 +62,8 @@ def main(args):
     )
 
     # Iterate over batches
-    for batch_idx, (img, mask) in enumerate(tqdm(dataloader, desc="Encoding patches")):
+    for batch_idx, (img, mask, filename) in enumerate(tqdm(dataloader, desc="Reading patches")):
+        print("Image file name:", filename)
         img = img.to(DEVICE)  # Shape: [batch_size, 3, 2048, 2048]
         mask = mask.to(DEVICE)  # Shape: [batch_size, 1, 2048, 2048]
         print("img shape: ", img.shape)
