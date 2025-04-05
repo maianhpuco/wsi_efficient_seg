@@ -9,6 +9,6 @@ module load python/3.10
 module load conda
 source /project/hnguyen2/mvu9/conda_envs/efficientnet/bin/activate
 
-python src/datasets/kpis/extract_patches.py --config configs/kpis.yaml
+python experiments/processing/kpis_patching.py --config configs/kpis.yaml
 
 conda deactivate
