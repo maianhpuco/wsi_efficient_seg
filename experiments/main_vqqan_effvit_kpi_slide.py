@@ -18,9 +18,7 @@ from torch.utils.data import Dataset, DataLoader
 # from dall_e import map_pixels, unmap_pixels
 # from dall_e.encoder import Encoder
 # from dall_e.decoder import Decoder
-from torch.serialization import add_safe_globals
 
-add_safe_globals([Encoder, Decoder])
 
 
 # Device setup
@@ -90,8 +88,8 @@ class WSIPatchDataset(Dataset):
         img_path = self.image_paths[idx]
         img = Image.open(img_path).convert("RGB")
         img_vqgan = preprocess(img, target_image_size=self.target_size, map_dalle=False)
-        img_dalle = preprocess(img, target_image_size=self.target_size, map_dalle=True)
-        return img_vqgan, img_dalle, os.path.basename(img_path)
+        # img_dalle = preprocess(img, target_image_size=self.target_size, map_dalle=True)
+        return img_vqgan, os.path.basename(img_path)
 
 # Encoding functions
 def encode_with_vqgan(x, model):
@@ -109,7 +107,7 @@ def encode_with_dalle(x, encoder):
 # Main encoding pipeline
 def encode_patches(dataloader, model32x32, encoder_dalle=None, save_dir=None):
     os.makedirs(save_dir, exist_ok=True)
-    for batch_idx, (img_vqgan, img_dalle, filenames) in enumerate(tqdm(dataloader, desc="Encoding patches")):
+    for batch_idx, (img_vqgan, filenames) in enumerate(tqdm(dataloader, desc="Encoding patches")):
     # for batch_idx, (img_vqgan, img_dalle, filenames) in enumerate(dataloader):
         img_vqgan = img_vqgan.to(DEVICE)
         
