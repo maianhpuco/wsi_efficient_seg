@@ -23,6 +23,7 @@ class WSIDataset(Dataset):
         image = []
         seg = []
         types = glob(os.path.join(data_dir, '*'))
+        print(types)
         for type in types:
             now_imgs = glob(os.path.join(type, 'img', '*.tiff'))  # Assuming input is TIFF as in your code
             image.extend(now_imgs)
