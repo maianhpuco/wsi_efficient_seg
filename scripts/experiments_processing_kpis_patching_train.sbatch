@@ -6,6 +6,6 @@
 #SBATCH --cpus-per-task=4
 
 
-python experiments/processing/kpis_patching.py --config configs/kpis.yaml
+python experiments/processing/wsi_level.py --config configs/kpis.yaml
 
 conda deactivate
