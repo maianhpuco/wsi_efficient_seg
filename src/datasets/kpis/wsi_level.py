@@ -32,7 +32,10 @@ def get_monai_wsi_dataloader(data_dir, batch_size=1, shuffle=False, num_workers=
     for folder in types:
         image_paths.extend(glob(os.path.join(folder, '*_wsi.tiff')))
         mask_paths.extend(glob(os.path.join(folder, '*_mask.tiff')))
+    
+        
     print("Len of image and mask: ", len(image_paths), len(mask_paths)) 
+    
     
     image_paths = sorted(image_paths)
     mask_paths = sorted(mask_paths)
