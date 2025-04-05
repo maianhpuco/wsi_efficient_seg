@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=wsi_patch
-#SBATCH --output=wsi_patch.out
+#SBATCH --job-name=train_wsi_patch
+#SBATCH --output=train_wsi_patch.out
 #SBATCH --time=24:00:00
 #SBATCH --mem=64G
 #SBATCH --cpus-per-task=4
