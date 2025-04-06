@@ -14,7 +14,7 @@ import torch
 import torch.nn as nn
 
 
-def efficientvit_seg_b2(**kwargs) -> EfficientViTSeg:
+def efficientvit_seg_b2(**kwargs):
     from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b2
     from efficientvit.models.efficientvit.seg import EfficientViTSeg
     from efficientvit.models.efficientvit.seg import SegHead 
