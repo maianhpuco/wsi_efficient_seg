@@ -9,6 +9,7 @@ from glob import glob
 import argparse
 
 from src.datasets.kpis.wsi_level import WSIPatchDataset
+from tools.kpis import efficientvit_seg_b2
 
 def load_model_from_checkpoint(checkpoint_path, device='cuda'):
     """
