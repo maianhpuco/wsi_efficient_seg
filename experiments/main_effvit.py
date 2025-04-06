@@ -80,8 +80,6 @@ def main(args):
     print("Done training")
 
 if __name__ == "__main__":
-    torch.set_grad_enabled(False)
-
     # Argument parser
     parser = argparse.ArgumentParser(description="Process WSI patches")
     parser.add_argument("--config", type=str, default="configs/main_effvit.yaml", help="Path to YAML config file")
