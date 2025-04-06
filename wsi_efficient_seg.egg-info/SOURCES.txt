@@ -1,0 +1,13 @@
+README.md
+setup.py
+src/__init__.py
+src/datasets/__init__.py
+src/models/__init__.py
+src/models/backbones/__init__.py
+src/models/backbones/efficientvit.py
+src/models/segmentors/__init__.py
+src/models/segmentors/efficientvit.py
+wsi_efficient_seg.egg-info/PKG-INFO
+wsi_efficient_seg.egg-info/SOURCES.txt
+wsi_efficient_seg.egg-info/dependency_links.txt
+wsi_efficient_seg.egg-info/top_level.txt

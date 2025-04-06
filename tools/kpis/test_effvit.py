@@ -8,7 +8,6 @@ import numpy as np
 from glob import glob
 import argparse
 
-from efficientvit.models.efficientvit.seg import efficientvit_seg_b2
 from src.datasets.kpis.wsi_level import WSIPatchDataset
 
 def load_model_from_checkpoint(checkpoint_path, device='cuda'):
