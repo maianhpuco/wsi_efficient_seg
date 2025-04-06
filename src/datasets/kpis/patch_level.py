@@ -43,6 +43,10 @@ class PatchDataset(Dataset):
             for subdir in os.listdir(category_dir):
                 img_dir = os.path.join(category_dir, subdir, 'img')
                 mask_dir = os.path.join(category_dir, subdir, 'mask')
+
+                print(f"Processing category: {subdir}")
+                print(f"Image directory: {img_dir}")
+                print(f"Mask directory: {mask_dir}")
                 
                 if not os.path.exists(img_dir) or (self.return_masks and not os.path.exists(mask_dir)):
                     continue
