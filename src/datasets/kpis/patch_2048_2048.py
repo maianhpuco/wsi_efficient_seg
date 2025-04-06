@@ -26,35 +26,68 @@ class WSIPatch2048Dataset(Dataset):
 
     def __len__(self):
         return len(self.image_paths)
-    
+
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
         mask_path = img_path.replace("_img.png", "_mask.png")
 
-        # Load PIL Images
+        # Load the image and mask
         img = Image.open(img_path).convert("RGB")
-        mask = Image.open(mask_path).convert("L")  # Grayscale mask
+        mask = Image.open(mask_path).convert("L")  # grayscale image, each pixel is a class index
+        # Check if the image and mask are the same size
+        mask_np = np.array(mask)
 
-        # Apply transforms if provided
+        print(f"Unique labels in mask: {np.unique(mask_np)}")
+        print(f"Number of classes: {len(np.unique(mask_np))}")  
+        # Apply image transform
         if self.img_transform:
-            img = self.img_transform(img)  # should return a tensor [3, H, W]
+            img = self.img_transform(img)
         else:
             img = TF.to_tensor(img)
 
+        # Apply mask transform
         if self.mask_transform:
-            mask = self.mask_transform(mask)  # usually resize or augment as PIL
-            mask = torch.as_tensor(np.array(mask), dtype=torch.long)
-        else:
-            mask = torch.as_tensor(np.array(mask), dtype=torch.long)
+            mask = self.mask_transform(mask)  # should still be a PIL image
+        # Convert mask to LongTensor of shape [H, W] with class indices
+        mask = torch.as_tensor(np.array(mask), dtype=torch.long)
 
         # Resize manually if needed
         if self.target_size != 2048:
             img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
-            mask = TF.resize(mask.unsqueeze(0).float(), [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST).squeeze(0).long()
+            mask = TF.resize(mask.unsqueeze(0).float(), [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST)
+            mask = mask.squeeze(0).long()
 
         filename = os.path.basename(img_path)
+        return img, mask, filename 
+    
+    # def __getitem__(self, idx):
+    #     img_path = self.image_paths[idx]
+    #     mask_path = img_path.replace("_img.png", "_mask.png")
+
+    #     # Load PIL Images
+    #     img = Image.open(img_path).convert("RGB")
+    #     mask = Image.open(mask_path).convert("L")  # Grayscale mask
+
+    #     # Apply transforms if provided
+    #     if self.img_transform:
+    #         img = self.img_transform(img)  # should return a tensor [3, H, W]
+    #     else:
+    #         img = TF.to_tensor(img)
+
+    #     if self.mask_transform:
+    #         mask = self.mask_transform(mask)  # usually resize or augment as PIL
+    #         mask = torch.as_tensor(np.array(mask), dtype=torch.long)
+    #     else:
+    #         mask = torch.as_tensor(np.array(mask), dtype=torch.long)
+
+    #     # Resize manually if needed
+    #     if self.target_size != 2048:
+    #         img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
+    #         mask = TF.resize(mask.unsqueeze(0).float(), [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST).squeeze(0).long()
+
+    #     filename = os.path.basename(img_path)
         
-        return img, mask, filename
+    #     return img, mask, filename
         
     # def __getitem__(self, idx):
     #     img_path = self.image_paths[idx]
