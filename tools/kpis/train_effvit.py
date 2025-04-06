@@ -6,7 +6,38 @@ from torch.utils.data import DataLoader
 from typing import Union, Any
 import sys
 sys.path.append("src/includes/efficientvit")
-from efficientvit.models.efficientvit.seg import efficientvit_seg_b2  # Adjust based on your model choice
+# from efficientvit.models.efficientvit.seg import efficientvit_seg_b2  # Adjust based on your model choice
+
+from typing import Optional
+
+import torch
+import torch.nn as nn
+
+
+def efficientvit_seg_b2(**kwargs) -> EfficientViTSeg:
+    from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b2
+    from efficientvit.models.efficientvit.seg import EfficientViTSeg
+    from efficientvit.models.efficientvit.seg import SegHead 
+    from efficientvit.models.efficientvit.utils import build_kwargs_from_config 
+    
+    backbone = efficientvit_backbone_b2(**kwargs)
+
+    head = SegHead(
+        fid_list=["stage4", "stage3", "stage2"],
+        in_channel_list=[384, 192, 96],  # Adjust based on your dataset
+        stride_list=[32, 16, 8],
+        head_stride=8,
+        head_width=96,
+        head_depth=3,
+        expand_ratio=4,
+        middle_op="mbconv",
+        final_expand=None,
+        n_classes=2,  # Set this to the number of classes in your dataset
+        **build_kwargs_from_config(kwargs, SegHead),
+    )
+    model = EfficientViTSeg(backbone, head)
+    
+    return model 
 
 def train_efficientvit_segmentation(
     dataloader,
@@ -37,10 +68,9 @@ def train_efficientvit_segmentation(
     # Ensure checkpoint directory exists
     os.makedirs(checkpoint_dir, exist_ok=True)
 
-    if model_name == 'b2':
-        model = efficientvit_seg_b2(dataset=dataset_name, pretrained=False)
-    else:
-        raise ValueError(f"Model {model_name} not supported.")
+
+    model = efficientvit_seg_b2(pretrained=False)
+
 
     model.to(device)
 
