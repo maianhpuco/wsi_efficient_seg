@@ -39,7 +39,6 @@ def main(args):
         # Define transformations
     transform = transforms.Compose([
         transforms.Resize((512, 512)),  # Adjust size as needed
-        transforms.ToTensor(),
     ])
     # Dataset and DataLoader
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
