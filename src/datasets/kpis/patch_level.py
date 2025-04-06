@@ -59,7 +59,7 @@ class PatchDataset(Dataset):
                     print(f"Processing image: {img_file}")
                     self.image_paths.append(os.path.join(img_dir, img_file))
                     if self.return_masks:
-                        mask_file = os.path.join(mask_dir, img_file)  # Assumes mask has same filename
+                        mask_file = os.path.join(mask_dir, img_file.replace('_img', '_mask'))  # Assumes mask has same filename
                         self.mask_paths.append(mask_file)
                     self.labels.append(self.category_to_idx[category])
         
