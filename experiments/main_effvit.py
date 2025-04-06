@@ -32,9 +32,6 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"DEVICE: {DEVICE}")
 
 
-def train()
-
-
 
 def main(args):
     # Validate train_test_val
