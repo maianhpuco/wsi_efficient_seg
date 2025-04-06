@@ -34,7 +34,12 @@ class WSIPatch2048Dataset(Dataset):
         # Load mask (2048x2048 grayscale)
         mask_path = img_path.replace("_img.png", "_mask.png")
         mask = Image.open(mask_path).convert("L")  # Grayscale mask
-
+        
+        if self.img_transform:
+            img = self.img_transform(img)
+        if self.mask_transform: 
+            mask = self.mask_transform(mask) 
+            
         # Convert to tensors
         img_tensor = T.ToTensor()(img)  # Shape: [3, 2048, 2048]
         mask_tensor = T.ToTensor()(mask)  # Shape: [1, 2048, 2048]
@@ -45,12 +50,6 @@ class WSIPatch2048Dataset(Dataset):
             mask_tensor = TF.resize(mask_tensor, [self.target_size, self.target_size], interpolation=T.InterpolationMode.NEAREST)
         
         filename = os.path.basename(img_path)
-        
-        if self.img_transform:
-            img_tensor = self.img_transform(img_tensor)
-        if self.mask_transform: 
-            mask_tensor = self.mask_transform(mask_tensor) 
-            
         return img_tensor, mask_tensor, filename 
     
         # return img_tensor, mask_tensor  # Both are tensors now
