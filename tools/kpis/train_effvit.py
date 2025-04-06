@@ -42,7 +42,7 @@ def efficientvit_seg_b2(**kwargs):
 def train_efficientvit_segmentation(
     dataloader,
     model_name: str = 'b2',
-    dataset_name: str = 'cityscapes',
+    dataset_name: str = 'kpis',
     num_epochs: int = 10,
     learning_rate: float = 0.001,
     device: str = 'cuda' if torch.cuda.is_available() else 'cpu',
@@ -87,10 +87,13 @@ def train_efficientvit_segmentation(
 
             optimizer.zero_grad()
             outputs = model(images)
-            loss = criterion(outputs, masks.long())
+            loss = criterion(outputs, masks)
             loss.backward()
             optimizer.step()
-
+            
+            print("loss.requires_grad:", loss.requires_grad)
+            print("loss.grad_fn:", loss.grad_fn)
+ 
             running_loss += loss.item()
 
             if batch_idx % log_interval == 0:
