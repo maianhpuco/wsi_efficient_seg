@@ -71,7 +71,7 @@ def main(args):
         dataloader,
         model_name = 'b2',
         dataset_name = 'kpis',
-        num_epochs = 2,
+        num_epochs = 10,
         learning_rate = 0.001,
         device = DEVICE,
         checkpoint_dir= args.checkpoint_dir,
