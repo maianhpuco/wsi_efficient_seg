@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset
-
+import torch 
 # Dataset for WSI patches
 class WSIPatch2048Dataset(Dataset):
     def __init__(self, patch_dir, target_size=2048, img_transform=None, mask_transform=None):  # Default to 2048 unless resizing
@@ -39,7 +39,10 @@ class WSIPatch2048Dataset(Dataset):
             img = self.img_transform(img)
         if self.mask_transform: 
             mask = self.mask_transform(mask) 
-        masks = masks.squeeze(1) 
+            mask = torch.as_tensor(np.array(mask), dtype=torch.long) 
+        else: 
+            mask = torch.as_tensor(np.array(mask), dtype=torch.long)
+        mask_tensor = torch.as_tensor(np.array(mask), dtype=torch.long)
         # Convert to tensors
         img_tensor = T.ToTensor()(img)  # Shape: [3, 2048, 2048]
         mask_tensor = T.ToTensor()(mask)  # Shape: [1, 2048, 2048]
