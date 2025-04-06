@@ -71,7 +71,7 @@ def main(args):
         num_epochs = 2,
         learning_rate = 0.001,
         device = DEVICE,
-        checkpoint_dir= args.config('checkpoint_dir'),
+        checkpoint_dir= args.config.get('checkpoint_dir'),
         log_interval = 10
     )
     print("Done training")
