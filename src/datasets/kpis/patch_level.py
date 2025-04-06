@@ -52,6 +52,7 @@ class PatchDataset(Dataset):
                                   if os.path.splitext(f)[1].lower() in self.image_extensions])
                 
                 for img_file in img_files:
+                    print(f"Processing image: {img_file}")
                     self.image_paths.append(os.path.join(img_dir, img_file))
                     if self.return_masks:
                         mask_file = os.path.join(mask_dir, img_file)  # Assumes mask has same filename
