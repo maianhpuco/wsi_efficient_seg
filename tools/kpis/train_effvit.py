@@ -32,7 +32,7 @@ def efficientvit_seg_b2(**kwargs):
         expand_ratio=4,
         middle_op="mbconv",
         final_expand=4,
-        n_classes=19,
+        n_classes=2,
         **build_kwargs_from_config(kwargs, SegHead),
     )
     model = EfficientViTSeg(backbone, head)
