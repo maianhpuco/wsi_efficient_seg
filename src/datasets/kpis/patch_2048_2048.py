@@ -13,9 +13,12 @@ from torch.utils.data import Dataset
 
 # Dataset for WSI patches
 class WSIPatch2048Dataset(Dataset):
-    def __init__(self, patch_dir, target_size=2048):  # Default to 2048 unless resizing
+    def __init__(self, patch_dir, target_size=2048, img_transform=None, mask_transform=None):  # Default to 2048 unless resizing
         self.patch_dir = patch_dir
         self.target_size = target_size
+        self.img_transform = img_transform
+        self.mask_transform = mask_transform 
+        
         self.image_paths = sorted(glob(os.path.join(patch_dir, "**/*_img.png"), recursive=True))
         if not self.image_paths:
             raise ValueError(f"No image patches found in {patch_dir}")
@@ -43,6 +46,11 @@ class WSIPatch2048Dataset(Dataset):
         
         filename = os.path.basename(img_path)
         
+        if self.img_transform:
+            img_tensor = self.img_transform(img_tensor)
+        if self.mask_transform: 
+            mask_tensor = self.mask_transform(mask_tensor) 
+            
         return img_tensor, mask_tensor, filename 
     
         # return img_tensor, mask_tensor  # Both are tensors now

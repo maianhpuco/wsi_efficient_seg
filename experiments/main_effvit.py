@@ -15,43 +15,43 @@ import torch.nn.functional as F
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
+
 # Add project root to sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 
 from src.datasets.kpis.patch_2048_2048 import WSIPatch2048Dataset 
+import sys
+sys.path.append("src/includes/efficientvit")
+from efficientvit.models.efficientvit.seg import efficientvit_seg_b2  # Adjust based on your model choice
 
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"DEVICE: {DEVICE}")
 
-# Model loading functions
-def load_model(path, device):
-    if path.startswith('http'):
-        from urllib.request import urlopen
-        with urlopen(path) as f:
-            buf = io.BytesIO(f.read())
-    else:
-        with open(path, 'rb') as f:
-            buf = io.BytesIO(f.read())
-    return torch.load(buf, map_location=device)
 
-def load_config(config_path, display=False):
-    config = OmegaConf.load(config_path)
-    if display:
-        print(yaml.dump(OmegaConf.to_container(config)))
-    return config
+def train()
+
 
 
 def main(args):
     # Validate train_test_val
     if args.train_test_val not in ["train", "test", "val"]:
         raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
-
+        # Define transformations
+    transform = transforms.Compose([
+        transforms.Resize((512, 512)),  # Adjust size as needed
+        transforms.ToTensor(),
+    ])
     # Dataset and DataLoader
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
-    dataset = WSIPatch2048Dataset(patch_dir, target_size=2048)  # Keep 2048x2048
+    dataset = WSIPatch2048Dataset(
+        patch_dir, 
+        target_size=2048, 
+        img_transform=transform, 
+        mask_transform=transform)  # Keep 2048x2048
     
     dataloader = DataLoader(
         dataset,
@@ -61,6 +61,7 @@ def main(args):
         pin_memory=torch.cuda.is_available()
     )
 
+    
     # Iterate over batches
     for batch_idx, (img, mask, filename) in enumerate(tqdm(dataloader, desc="Reading patches")):
         print("Image file name:", filename)
