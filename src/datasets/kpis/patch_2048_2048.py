@@ -39,7 +39,7 @@ class WSIPatch2048Dataset(Dataset):
             img = self.img_transform(img)
         if self.mask_transform: 
             mask = self.mask_transform(mask) 
-            
+        masks = masks.squeeze(1) 
         # Convert to tensors
         img_tensor = T.ToTensor()(img)  # Shape: [3, 2048, 2048]
         mask_tensor = T.ToTensor()(mask)  # Shape: [1, 2048, 2048]
