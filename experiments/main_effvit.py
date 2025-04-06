@@ -5,10 +5,7 @@ import yaml
 import torch
 import argparse
 from tqdm import tqdm 
-from omegaconf import OmegaConf
-from taming.models.vqgan import VQModel, GumbelVQ
-import io
-import PIL
+
 from PIL import Image
 import numpy as np
 import torch.nn.functional as F
