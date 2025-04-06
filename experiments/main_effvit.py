@@ -73,13 +73,13 @@ def main(args):
         dataloader,
         model_name = 'b2',
         dataset_name = 'kpis',
-        num_epochs = 10,
+        num_epochs = 2,
         learning_rate = 0.001,
-        device = DEVICE
+        device = DEVICE,
         checkpoint_dir= args.config('checkpoint_dir'),
         log_interval = 10
-    ): 
-    print("Encoding complete")
+    )
+    print("Done training")
 
 if __name__ == "__main__":
     torch.set_grad_enabled(False)
