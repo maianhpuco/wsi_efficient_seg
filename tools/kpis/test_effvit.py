@@ -1,157 +1,96 @@
 import os
-import glob
-from pathlib import Path
-import cv2
-import numpy as np
-
 import torch
-from mmseg.apis import init_model, inference_model
-
-import utils
-from tqdm import tqdm
-
+import torch.nn as nn
+from torch.utils.data import DataLoader
+import torchvision.transforms as transforms
+from PIL import Image
+import numpy as np
+from glob import glob
 import argparse
 
-parser = argparse.ArgumentParser()
+from efficientvit.models.efficientvit.seg import efficientvit_seg_b2
+from src.datasets.kpis.wsi_level import WSIPatchDataset
 
-parser.add_argument("--input", type=str, help="can be a single input or a directory of images from a WSI")
-parser.add_argument("--config", type=str, help="config path")
-parser.add_argument("--ckpt", type=str, help="checkpoint path")
-parser.add_argument("--stitch", action="store_true", help="apply stitching strategy or not")
-parser.add_argument("--img_size", type=int, help="2048 (KPIs) or 1024 (Mice glomeruli)")
-
-def get_mask_path(img_path: str):
-    """Get mask path for both KPIs (in .JPG) and Mice glomeruli (in .PNG) datasets
+def load_model_from_checkpoint(checkpoint_path, device='cuda'):
     """
-    # in case of Mice glomeruli (orbit)
-    mask_path = img_path.replace('/img/', '/mask/').replace('_img.jpg', '_mask.png')
-    if os.path.isfile(mask_path):
-        return mask_path
-    else:
-        # in case of KPIs
-        mask_path = mask_path.replace('_mask.png', '_mask.jpg')
-        if os.path.isfile(mask_path):
-            return mask_path
-        else:
-            raise Exception(f'No mask found for {img_path}')
-
-
-if __name__=="__main__":
-    args = parser.parse_args()
-    print(args)
-
-    # define test_pipeline
-    test_pipeline = [
-        dict(type='LoadImageFromNDArray'),
-        dict(type='PackSegInputs'),
-    ]
-
-    # load model
-    model = init_model(args.config, args.ckpt)
-    # assign test_pipeline
-    model.cfg.test_pipeline = test_pipeline
-    print(model.cfg.model.backbone.type)
-
-    # get image paths
-    if os.path.isdir(args.input):
-        # get WSI test data
-        input_dir = Path(args.input)
-        all_img_paths = glob.glob(str(Path(input_dir)/'**/*_img.*'), recursive=True)
-    elif os.path.isfile(args.input):
-        all_img_paths = [args.input]
+    Load a trained EfficientViT segmentation model from a checkpoint.
     
-    # check if stitching strategy can be performed
-    is_stitching = args.stitch
-    if is_stitching and len(all_img_paths) == 1:
-        print(f'Found 1 input path, cannot perform stitching!')
-        is_stitching = False
-
-    print(f'Number of input: {len(all_img_paths)}')
-    all_wsi_ids, all_coords = utils.get_wsi_data(all_img_paths, args.img_size)
-
-    if len(set(all_wsi_ids)) > 1:
-        print(f'Images in {args.input} are not from the same WSI, cannot perform stitching!')
-        is_stitching = False
-
-    mDice = 0.0
-    # apply stitching strategy
-    if is_stitching:
-        print(f'Performing stitching strategy')
-        all_coords = np.array(all_coords)
-
-        # get the max of x and y [x_min, y_min, x_max, y_max]
-        max_x = np.max(all_coords[:, 2])
-        max_y = np.max(all_coords[:, 3])
-
-        min_size = args.img_size
-        if max_x < min_size:
-            max_x = min_size
-        if max_y < min_size:
-            max_y = min_size
-
-        # create a WSI binary predicted mask
-        wsi_shape = [2, max_y, max_x]
-        pred_wsi_data = torch.full(wsi_shape, 0, dtype=torch.float)
-
-        pbar = tqdm(list(zip(all_img_paths, all_coords)), leave=True)
-        for img_path, coord in pbar:
-            img_data = cv2.imread(img_path, -1)
-            x_min, y_min, x_max, y_max = coord
-
-            # predict
-            pred_res = inference_model(model, img_data)
-            raw_logits = pred_res.seg_logits.data
-            # softmax
-            raw_logits = torch.softmax(raw_logits, dim=0)
-            raw_logits = raw_logits.cpu()
-
-            # store raw predictions
-            pred_wsi_data[:, y_min:y_max, x_min:x_max] += raw_logits
-
-        # get predicted mask from raw data
-        pbar = tqdm(list(zip(all_img_paths, all_coords)), leave=True)
-        print("Cropping back: ")
-        for img_path, coord in pbar:
-            # get mask data
-            mask_path = get_mask_path(img_path)
-            mask_data = cv2.imread(mask_path, -1)
-            
-            x_min, y_min, x_max, y_max = coord
-            crop_pred_raw = pred_wsi_data[:, y_min:y_max, x_min:x_max]
-
-            crop_pred_raw = torch.softmax(crop_pred_raw, dim=0)
-
-            # get predicted mask
-            pred_max_value, pred_seg = crop_pred_raw.max(axis=0, keepdims=True)
-
-            pred_max_value = pred_max_value.cpu().numpy()[0]
-            pred_seg = pred_seg.cpu().numpy()[0]
-
-            # calculate DICE score
-            dice_score = utils.calculate_dice(y_pred=pred_seg, y_gt=mask_data)
-            mDice += dice_score
-
-        print(f'Mean Dice: {mDice/len(all_img_paths)}')
-
-    # segmentation per image patch
+    Parameters:
+        checkpoint_path (str): Path to the model checkpoint file
+        device (str): Device to load the model on ('cuda' or 'cpu')
+        
+    Returns:
+        model: The loaded model
+    """
+    # Initialize the model
+    model = efficientvit_seg_b2(pretrained=False)
+    
+    # Load the checkpoint
+    if os.path.exists(checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+        model.load_state_dict(checkpoint)
+        print(f"Model loaded from {checkpoint_path}")
     else:
-        print(f'Performing per image patch segmentation')
-        for img_path in tqdm(all_img_paths):
-            img_data = cv2.imread(img_path, -1)
-            # get mask data
-            mask_path = get_mask_path(img_path)
-            mask_data = cv2.imread(mask_path, -1)
+        raise FileNotFoundError(f"Checkpoint file not found: {checkpoint_path}")
+    
+    # Move model to the specified device
+    model = model.to(device)
+    model.eval()  # Set model to evaluation mode
+    
+    return model
+
+def main():
+    parser = argparse.ArgumentParser(description='Test EfficientViT segmentation model')
+    parser.add_argument('--checkpoint', type=str, required=True, help='Path to model checkpoint')
+    parser.add_argument('--data_dir', type=str, required=True, help='Directory containing test data')
+    parser.add_argument('--output_dir', type=str, default='./results', help='Directory to save results')
+    parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu', 
+                        help='Device to run inference on')
+    args = parser.parse_args()
+    
+    # Create output directory if it doesn't exist
+    os.makedirs(args.output_dir, exist_ok=True)
+    
+    # Load model
+    model = load_model_from_checkpoint(args.checkpoint, args.device)
+    
+    # Set up transforms
+    transform = transforms.Compose([
+        transforms.Resize((512, 512)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    
+    mask_transform = transforms.Compose([
+        transforms.Resize((512, 512)),
+        transforms.ToTensor()
+    ])
+    
+    
+    # Create dataset and dataloader    
+    test_dataset = WSIPatchDataset(args.data_dir, transform=transform, mask_transform=mask_transform)
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+    
+    # Run inference
+    with torch.no_grad():
+        for i, (images, masks, filenames) in enumerate(test_loader):
+            images = images.to(args.device)
+            outputs = model(images)
             
-            # predict
-            pred_res = inference_model(model, img_data)
-            raw_logits = pred_res.seg_logits.data
+            # Process outputs (assuming binary segmentation)
+            probs = torch.softmax(outputs, dim=1)
+            preds = torch.argmax(probs, dim=1).cpu().numpy()
+            
+            # Save results
+            for j, pred in enumerate(preds):
+                pred_img = Image.fromarray((pred * 255).astype(np.uint8))
+                save_path = os.path.join(args.output_dir, f"{os.path.basename(filenames[j])}_pred.png")
+                pred_img.save(save_path)
+            
+            if i % 10 == 0:
+                print(f"Processed {i}/{len(test_loader)} images")
+    
+    print("Testing complete.")
 
-            # get predicted mask
-            _, pred_seg = raw_logits.max(axis=0, keepdims=True)
-            pred_seg = pred_seg.cpu().numpy()[0]
-
-            # calculate DICE score
-            dice_score = utils.calculate_dice(y_pred=pred_seg, y_gt=mask_data)
-            mDice += dice_score
-
-        print(f'Mean Dice: {mDice/len(all_img_paths)}')
+if __name__ == "__main__":
+    main()
