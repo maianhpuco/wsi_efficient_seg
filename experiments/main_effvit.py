@@ -19,12 +19,14 @@ from typing import Union, Any
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
-
 from src.datasets.kpis.patch_2048_2048 import WSIPatch2048Dataset 
+from tools.kpis.train_effvit import train_efficientvit_segmentation 
+
+
 import sys
 sys.path.append("src/includes/efficientvit")
-
 from efficientvit.models.efficientvit.seg import efficientvit_seg_b2  # Adjust based on your model choice
+
 
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -67,6 +69,16 @@ def main(args):
         print("mask shape: ", mask.shape)
         break  # Remove this if you want to process all batches
     
+    train_efficientvit_segmentation(
+        dataloader,
+        model_name = 'b2',
+        dataset_name = 'kpis',
+        num_epochs = 10,
+        learning_rate = 0.001,
+        device = DEVICE
+        checkpoint_dir= args.config('checkpoint_dir'),
+        log_interval = 10
+    ): 
     print("Encoding complete")
 
 if __name__ == "__main__":
@@ -74,7 +86,7 @@ if __name__ == "__main__":
 
     # Argument parser
     parser = argparse.ArgumentParser(description="Process WSI patches")
-    parser.add_argument("--config", type=str, default="configs/main_vqqan_effvit_kpi_slide.yaml", help="Path to YAML config file")
+    parser.add_argument("--config", type=str, default="configs/main_effvit.yaml", help="Path to YAML config file")
     parser.add_argument("--data_config", type=str, default="configs/kpis.yaml", help="Path to data YAML config file")
     parser.add_argument("--train_test_val", type=str, default="train", help="Specify train/test/val")
     
