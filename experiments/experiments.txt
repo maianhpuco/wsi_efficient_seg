@@ -1,0 +1,22 @@
+
+# Efficient ViT
+## Checking Training 
+
+Epoch [1/10], Batch [0/402], Loss: 0.7494
+Epoch [1/10], Batch [10/402], Loss: 0.2633
+Epoch [1/10], Batch [20/402], Loss: 0.1055
+Epoch [1/10], Batch [30/402], Loss: 0.0739
+Epoch [1/10], Batch [40/402], Loss: 0.0592
+Epoch [1/10], Batch [50/402], Loss: 0.0396
+Epoch [1/10], Batch [60/402], Loss: 0.0414
+Epoch [1/10], Batch [70/402], Loss: 0.0440
+Epoch [1/10], Batch [80/402], Loss: 0.0235
+Epoch [1/10], Batch [90/402], Loss: 0.1018
+Epoch [1/10], Batch [100/402], Loss: 0.0403
+Epoch [1/10], Batch [110/402], Loss: 0.0434
+Epoch [1/10], Batch [120/402], Loss: 0.0653
+Epoch [1/10], Batch [130/402], Loss: 0.1337
+Epoch [1/10], Batch [140/402], Loss: 0.0723
+Epoch [1/10], Batch [150/402], Loss: 0.0732
+... 
+
