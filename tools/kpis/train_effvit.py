@@ -88,10 +88,10 @@ def train_efficientvit_segmentation(
             optimizer.zero_grad()
             outputs = model(images)
             
-            print("loss.requires_grad:", loss.requires_grad)
-            print("loss.grad_fn:", loss.grad_fn) 
-            
             loss = criterion(outputs, masks)
+            print("loss.requires_grad:", loss.requires_grad)
+            print("loss.grad_fn:", loss.grad_fn)  
+            
             loss.backward()
             optimizer.step()
             
