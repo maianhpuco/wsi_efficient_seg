@@ -35,10 +35,12 @@ class WSIPatch2048Dataset(Dataset):
         img = Image.open(img_path).convert("RGB")
         mask = Image.open(mask_path).convert("L")  # grayscale image, each pixel is a class index
         # Check if the image and mask are the same size
-        mask_np = np.array(mask)
+        mask_np = np.array(mask, dtype=np.uint8)
 
-        print(f"Unique labels in mask: {np.unique(mask_np)}")
-        print(f"Number of classes: {len(np.unique(mask_np))}")  
+        # Remap 255 → 1
+        mask_np[mask_np == 255] = 1
+
+        
         # Apply image transform
         if self.img_transform:
             img = self.img_transform(img)
@@ -49,8 +51,8 @@ class WSIPatch2048Dataset(Dataset):
         if self.mask_transform:
             mask = self.mask_transform(mask)  # should still be a PIL image
         # Convert mask to LongTensor of shape [H, W] with class indices
-        mask = torch.as_tensor(np.array(mask), dtype=torch.long)
-
+        mask = torch.as_tensor(mask_np, dtype=torch.long)  
+        
         # Resize manually if needed
         if self.target_size != 2048:
             img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
