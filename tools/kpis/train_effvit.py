@@ -32,7 +32,7 @@ def efficientvit_seg_b2(**kwargs):
         expand_ratio=1,
         middle_op="fmbconv",
         final_expand=None,
-        n_classes=19,
+        n_classes=2,
         act_func="gelu",
         **build_kwargs_from_config(kwargs, SegHead),
     ) 
