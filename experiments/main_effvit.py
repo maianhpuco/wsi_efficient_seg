@@ -27,24 +27,27 @@ from tools.kpis.train_effvit import train_efficientvit_segmentation
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"DEVICE: {DEVICE}")
 
-
-
 def main(args):
     # Validate train_test_val
     if args.train_test_val not in ["train", "test", "val"]:
         raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
         # Define transformations
-    transform = transforms.Compose([
+    img_transform = transforms.Compose([
         transforms.Resize((512, 512)),  # Adjust size as needed
+        transforms.ToTensor(),  
     ])
+    mask_transform = transforms.Compose([
+        transforms.Resize((512, 512), interpolation=Image.NEAREST),  # Preserve label values
+        # No ToTensor
+    ]) 
     # Dataset and DataLoader
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
     dataset = WSIPatch2048Dataset(
         patch_dir, 
-        target_size=512,
-        # target_size=2048, 
-        img_transform=transform, 
-        mask_transform=transform)  # Keep 2048x2048
+        target_size=512, # target_size=2048, 
+        img_transform=img_transform, 
+        mask_transform=mask_transform
+        )  # Keep 2048x2048
     
     dataloader = DataLoader(
         dataset,

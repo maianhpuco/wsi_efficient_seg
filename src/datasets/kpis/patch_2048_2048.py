@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image
 import torchvision.transforms.functional as TF 
 # Dataset for WSI patches
+
 class WSIPatch2048Dataset(Dataset):
     def __init__(self, patch_dir, target_size=2048, img_transform=None, mask_transform=None):  # Default to 2048 unless resizing
         self.patch_dir = patch_dir
@@ -25,9 +26,8 @@ class WSIPatch2048Dataset(Dataset):
 
     def __len__(self):
         return len(self.image_paths)
+    
     def __getitem__(self, idx):
-
-
         img_path = self.image_paths[idx]
         mask_path = img_path.replace("_img.png", "_mask.png")
 
@@ -53,6 +53,7 @@ class WSIPatch2048Dataset(Dataset):
             mask = TF.resize(mask.unsqueeze(0).float(), [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST).squeeze(0).long()
 
         filename = os.path.basename(img_path)
+        
         return img, mask, filename
         
     # def __getitem__(self, idx):
