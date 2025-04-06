@@ -23,11 +23,6 @@ from src.datasets.kpis.patch_2048_2048 import WSIPatch2048Dataset
 from tools.kpis.train_effvit import train_efficientvit_segmentation 
 
 
-import sys
-sys.path.append("src/includes/efficientvit")
-from efficientvit.models.efficientvit.seg import efficientvit_seg_b2  # Adjust based on your model choice
-
-
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"DEVICE: {DEVICE}")

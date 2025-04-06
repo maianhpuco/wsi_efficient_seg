@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from typing import Union, Any
+import sys
+sys.path.append("src/includes/efficientvit")
 from efficientvit.models.efficientvit.seg import efficientvit_seg_b2  # Adjust based on your model choice
 
 def train_efficientvit_segmentation(
