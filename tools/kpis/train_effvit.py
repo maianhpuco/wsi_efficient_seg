@@ -18,7 +18,7 @@ def efficientvit_seg_b2(**kwargs):
     from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b2
     from efficientvit.models.efficientvit.seg import EfficientViTSeg
     from efficientvit.models.efficientvit.seg import SegHead 
-    from efficientvit.models.efficientvit.utils import build_kwargs_from_config 
+    from efficientvit.models.utils import build_kwargs_from_config
     
     backbone = efficientvit_backbone_b2(**kwargs)
 
