@@ -51,7 +51,7 @@ def main(args):
     
     dataloader = DataLoader(
         dataset,
-        batch_size=64,
+        batch_size=32,
         shuffle=False,
         num_workers=4,
         pin_memory=torch.cuda.is_available()
@@ -60,11 +60,11 @@ def main(args):
     
     # Iterate over batches
     for batch_idx, (img, mask, filename) in enumerate(tqdm(dataloader, desc="Reading patches")):
-        print("Image file name:", filename)
+        # print("Image file name:", filename)
         img = img.to(DEVICE)  # Shape: [batch_size, 3, 2048, 2048]
         mask = mask.to(DEVICE)  # Shape: [batch_size, 1, 2048, 2048]
-        print("img shape: ", img.shape)
-        print("mask shape: ", mask.shape)
+        # print("img shape: ", img.shape)
+        # print("mask shape: ", mask.shape)
         break  # Remove this if you want to process all batches
     
     train_efficientvit_segmentation(
