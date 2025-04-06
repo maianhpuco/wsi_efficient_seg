@@ -51,7 +51,7 @@ def main(args):
     
     dataloader = DataLoader(
         dataset,
-        batch_size=4,
+        batch_size=64,
         shuffle=False,
         num_workers=4,
         pin_memory=torch.cuda.is_available()
