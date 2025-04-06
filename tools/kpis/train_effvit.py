@@ -24,17 +24,18 @@ def efficientvit_seg_b2(**kwargs):
 
     head = SegHead(
         fid_list=["stage4", "stage3", "stage2"],
-        in_channel_list=[384, 192, 96],  # Adjust based on your dataset
+        in_channel_list=[512, 256, 128],
         stride_list=[32, 16, 8],
         head_stride=8,
-        head_width=96,
+        head_width=256,
         head_depth=3,
-        expand_ratio=4,
-        middle_op="mbconv",
+        expand_ratio=1,
+        middle_op="fmbconv",
         final_expand=None,
-        n_classes=2,  # Set this to the number of classes in your dataset
+        n_classes=19,
+        act_func="gelu",
         **build_kwargs_from_config(kwargs, SegHead),
-    )
+    ) 
     model = EfficientViTSeg(backbone, head)
     
     return model 
