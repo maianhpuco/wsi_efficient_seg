@@ -30,7 +30,8 @@ def efficientvit_seg_l2(**kwargs):
         fid_list=["stage4", "stage3", "stage2"],
         in_channel_list=[512, 256, 128],   # Match backbone channel dims
         stride_list=[32, 16, 8],
-        head_stride=8,
+        head_stride=1,
+        # head_stride=8,
         head_width=128,                   # Wider than b2's 96
         head_depth=3,
         expand_ratio=4,
@@ -123,8 +124,11 @@ def train_efficientvit_segmentation(
             print("- input shape: ", images.shape)
             print("- outputs shape: ", outputs.shape)
             print("- masks shape: ", masks.shape)
-            break 
             
+            # - input shape:  torch.Size([1, 3, 2048, 2048])
+            # - outputs shape:  torch.Size([1, 2, 256, 256])
+            # - masks shape:  torch.Size([1, 2048, 2048]) 
+            # Reshape masks to match model output size        
             loss = criterion(outputs, masks)
             loss.backward()
             optimizer.step()
@@ -138,5 +142,5 @@ def train_efficientvit_segmentation(
         checkpoint_path = os.path.join(checkpoint_dir, f'efficientvit_{model_name}_epoch_{epoch+1}.pth')
         torch.save(model.state_dict(), checkpoint_path)
         print(f'Model checkpoint saved to {checkpoint_path}')
-        break 
+    
     print('Training complete.')
