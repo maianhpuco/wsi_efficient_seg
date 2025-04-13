@@ -49,6 +49,7 @@ def main(args):
         mask_transform=None
         )  # Keep 2048x2048
     
+    
     dataloader = DataLoader(
         dataset,
         batch_size=1,
