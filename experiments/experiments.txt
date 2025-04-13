@@ -1,5 +1,5 @@
 
-# Efficient ViT
+# Efficient ViT 512 * 512 
 ## Checking Training 
 
 Epoch [1/10], Batch [0/402], Loss: 0.7494
@@ -20,3 +20,42 @@ Epoch [1/10], Batch [140/402], Loss: 0.0723
 Epoch [1/10], Batch [150/402], Loss: 0.0732
 ... 
 
+
+# Efficient ViT 2048 * 2048 
+
+Epoch [1/10], Batch [20/6432], Loss: 0.1139
+Epoch [1/10], Batch [30/6432], Loss: 0.0518
+Epoch [1/10], Batch [40/6432], Loss: 0.0292
+Epoch [1/10], Batch [50/6432], Loss: 0.0163
+Epoch [1/10], Batch [60/6432], Loss: 0.0145
+Epoch [1/10], Batch [70/6432], Loss: 0.0144
+Epoch [1/10], Batch [80/6432], Loss: 0.0129
+Epoch [1/10], Batch [90/6432], Loss: 0.0725
+Epoch [1/10], Batch [100/6432], Loss: 0.0553
+Epoch [1/10], Batch [110/6432], Loss: 0.0816
+Epoch [1/10], Batch [120/6432], Loss: 0.0525
+Epoch [1/10], Batch [130/6432], Loss: 0.0181
+Epoch [1/10], Batch [140/6432], Loss: 0.0128
+Epoch [1/10], Batch [150/6432], Loss: 0.0261
+Epoch [1/10], Batch [160/6432], Loss: 0.0075
+Epoch [1/10], Batch [170/6432], Loss: 0.0101
+Epoch [1/10], Batch [180/6432], Loss: 0.0256
+Epoch [1/10], Batch [190/6432], Loss: 0.1216
+Epoch [1/10], Batch [200/6432], Loss: 0.0715
+Epoch [1/10], Batch [210/6432], Loss: 0.2346
+Epoch [1/10], Batch [220/6432], Loss: 0.0857
+Epoch [1/10], Batch [230/6432], Loss: 0.0996
+Epoch [1/10], Batch [240/6432], Loss: 0.0089
+Epoch [1/10], Batch [250/6432], Loss: 0.0401
+Epoch [1/10], Batch [260/6432], Loss: 0.1156
+Epoch [1/10], Batch [270/6432], Loss: 0.1006
+Epoch [1/10], Batch [280/6432], Loss: 0.0700
+Epoch [1/10], Batch [290/6432], Loss: 0.1380
+Epoch [1/10], Batch [300/6432], Loss: 0.0841
+Epoch [1/10], Batch [310/6432], Loss: 0.0427
+Epoch [1/10], Batch [320/6432], Loss: 0.0055
+Epoch [1/10], Batch [330/6432], Loss: 0.0058
+Epoch [1/10], Batch [340/6432], Loss: 0.0048
+Epoch [1/10], Batch [350/6432], Loss: 0.0071
+Epoch [1/10], Batch [360/6432], Loss: 0.0029
+Epoch [1/10], Batch [370/6432], Loss: 
