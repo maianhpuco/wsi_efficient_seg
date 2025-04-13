@@ -23,3 +23,29 @@ Epoch [1/10], Batch [150/402], Loss: 0.0732
 
 # Efficient ViT 2048 * 2048 | torch.Size([8, 2, 64, 64]) 
 
+Reading patches:   0%|                                                                         | 0/1608 [00:02<?, ?it/s]
+Epoch [1/10], Batch [0/1608], Loss: 0.7104
+Epoch [1/10], Batch [10/1608], Loss: 0.1799
+Epoch [1/10], Batch [20/1608], Loss: 0.1307
+Epoch [1/10], Batch [30/1608], Loss: 0.0819
+Epoch [1/10], Batch [40/1608], Loss: 0.0281
+Epoch [1/10], Batch [50/1608], Loss: 0.0560
+Epoch [1/10], Batch [60/1608], Loss: 0.0404
+Epoch [1/10], Batch [70/1608], Loss: 0.0517
+Epoch [1/10], Batch [80/1608], Loss: 0.0611
+Epoch [1/10], Batch [90/1608], Loss: 0.0121
+Epoch [1/10], Batch [100/1608], Loss: 0.0108
+Epoch [1/10], Batch [110/1608], Loss: 0.0591
+Epoch [1/10], Batch [120/1608], Loss: 0.0070
+Epoch [1/10], Batch [130/1608], Loss: 0.0077
+Epoch [1/10], Batch [140/1608], Loss: 0.0799
+Epoch [1/10], Batch [150/1608], Loss: 0.0102
+Epoch [1/10], Batch [160/1608], Loss: 0.0360
+Epoch [1/10], Batch [170/1608], Loss: 0.0087
+Epoch [1/10], Batch [180/1608], Loss: 0.0170
+Epoch [1/10], Batch [190/1608], Loss: 0.0402
+Epoch [1/10], Batch [200/1608], Loss: 0.0069
+Epoch [1/10], Batch [210/1608], Loss: 0.0038
+Epoch [1/10], Batch [220/1608], Loss: 0.0922
+Epoch [1/10], Batch [230/1608], Loss: 0.0069
+Epoch [1/10], Batch [240/1608], Loss: 0.0195
