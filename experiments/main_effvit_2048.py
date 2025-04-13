@@ -44,14 +44,14 @@ def main(args):
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
     dataset = WSIPatch2048Dataset(
         patch_dir, 
-        target_size=512, # target_size=2048, 
+        target_size=2048, # target_size=2048, 
         img_transform=img_transform, 
         mask_transform=mask_transform
         )  # Keep 2048x2048
     
     dataloader = DataLoader(
         dataset,
-        batch_size=32,
+        batch_size=2,
         shuffle=False,
         num_workers=4,
         pin_memory=torch.cuda.is_available()
