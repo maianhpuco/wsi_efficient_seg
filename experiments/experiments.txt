@@ -21,4 +21,5 @@ Epoch [1/10], Batch [150/402], Loss: 0.0732
 ... 
 
 
-# Efficient ViT 2048 * 2048 
+# Efficient ViT 2048 * 2048 | torch.Size([8, 2, 64, 64]) 
+
