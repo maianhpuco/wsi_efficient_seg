@@ -64,8 +64,10 @@ def main(args):
         # print("Image file name:", filename)
         img = img.to(DEVICE)  # Shape: [batch_size, 3, 2048, 2048]
         mask = mask.to(DEVICE)  # Shape: [batch_size, 1, 2048, 2048]
-        # print("img shape: ", img.shape)
-        # print("mask shape: ", mask.shape)
+        print("Check shape of image and mask")
+        print("img shape: ", img.shape)
+        print("mask shape: ", mask.shape)
+        
         break  # Remove this if you want to process all batches
     
     train_efficientvit_segmentation(
