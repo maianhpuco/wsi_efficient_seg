@@ -120,7 +120,8 @@ def train_efficientvit_segmentation(
 
             optimizer.zero_grad()
             outputs = model(images)
-            
+            print(print("outputs shape: ", outputs.shape))
+            break 
             loss = criterion(outputs, masks)
             loss.backward()
             optimizer.step()
@@ -129,7 +130,7 @@ def train_efficientvit_segmentation(
 
             if batch_idx % log_interval == 0:
                 print(f'Epoch [{epoch+1}/{num_epochs}], Batch [{batch_idx}/{len(dataloader)}], Loss: {loss.item():.4f}')
-
+        break 
         # Save checkpoint after each epoch
         checkpoint_path = os.path.join(checkpoint_dir, f'efficientvit_{model_name}_epoch_{epoch+1}.pth')
         torch.save(model.state_dict(), checkpoint_path)

@@ -1,5 +1,5 @@
 
-# Efficient ViT
+# Efficient ViT 512 * 512 
 ## Checking Training 
 
 Epoch [1/10], Batch [0/402], Loss: 0.7494
@@ -20,3 +20,5 @@ Epoch [1/10], Batch [140/402], Loss: 0.0723
 Epoch [1/10], Batch [150/402], Loss: 0.0732
 ... 
 
+
+# Efficient ViT 2048 * 2048 
