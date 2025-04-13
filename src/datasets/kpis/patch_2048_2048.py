@@ -42,7 +42,7 @@ class WSIPatch2048Dataset(Dataset):
         # Convert back to PIL to apply optional transforms (resize, etc.)
         mask = Image.fromarray(mask_np)
 
-        # Apply image transform (resize to 64x64)
+        # Apply image transform
         if self.img_transform:
             img = self.img_transform(img)
         else:
@@ -53,7 +53,7 @@ class WSIPatch2048Dataset(Dataset):
         if self.mask_transform:
             mask = self.mask_transform(mask)
             
-        mask = TF.resize(mask, [64, 64], interpolation=TF.InterpolationMode.NEAREST)
+        # mask = TF.resize(mask, [64, 64], interpolation=TF.InterpolationMode.NEAREST)
         mask = torch.as_tensor(np.array(mask), dtype=torch.long)
 
         filename = os.path.basename(img_path)
