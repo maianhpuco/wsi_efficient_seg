@@ -69,7 +69,7 @@ def main(args):
     
     train_efficientvit_segmentation(
         dataloader,
-        model_name = 'b2',
+        model_name = 'l2',
         dataset_name = 'kpis',
         num_epochs = 10,
         learning_rate = 0.001,
@@ -103,5 +103,10 @@ if __name__ == "__main__":
     args.checkpoint_dir = config.get('checkpoint_dir')
  
     main(args)
-
+    # [2048 * 2048]
+    # -> [512 * 512] -> [1/8] -> ([64 * 64]) 
+    
+    # evaluation
+    
+    # [2048 * 2048] -> mask [?] 
     

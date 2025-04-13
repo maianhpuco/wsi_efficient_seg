@@ -1,3 +1,8 @@
+## Problem: 
+- [ ] Input size W * H nho so voi output
+- [ ] Input size (VQGAN) khac voi input anh -> khong dung duoc skip connection de upsampling 
+
+
 
 ## Dataset Directory Structure (Image file counts per folder)
 ```

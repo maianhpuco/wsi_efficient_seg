@@ -202,4 +202,8 @@ if __name__ == "__main__":
     
     vqgan_logs_dir = config.get('vqgan_logs_dir')
     
-    main(args) 
+    main(args)
+    # [2048 * 2048]
+    # z [32 * 32 * 256]
+    
+    # [32 * 32] int  -> [32 * 32]

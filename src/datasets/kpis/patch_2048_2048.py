@@ -58,6 +58,9 @@ class WSIPatch2048Dataset(Dataset):
 
         filename = os.path.basename(img_path)
         return img, mask, filename
+
+
+
  
     # def __getitem__(self, idx):
     #     img_path = self.image_paths[idx]

@@ -14,6 +14,36 @@ import torch
 import torch.nn as nn
 
 
+def efficientvit_seg_l2(**kwargs):
+    from efficientvit.models.efficientvit.backbone import efficientvit_backbone_l2
+    from efficientvit.models.efficientvit.seg import EfficientViTSeg
+    from efficientvit.models.efficientvit.seg import SegHead 
+    from efficientvit.models.utils import build_kwargs_from_config
+    
+    backbone = efficientvit_backbone_l2(**kwargs)
+    # backbone = EfficientViTLargeBackbone(
+    #     width_list=[32, 64, 128, 256, 512],
+    #     depth_list=[1, 2, 2, 8, 8],
+    #     **build_kwargs_from_config(kwargs, EfficientViTLargeBackbone),
+    # )
+    head = SegHead(
+        fid_list=["stage4", "stage3", "stage2"],
+        in_channel_list=[512, 256, 128],   # Match backbone channel dims
+        stride_list=[32, 16, 8],
+        head_stride=8,
+        head_width=128,                   # Wider than b2's 96
+        head_depth=3,
+        expand_ratio=4,
+        middle_op="mbconv",
+        final_expand=4,
+        n_classes=2,
+        **build_kwargs_from_config(kwargs, SegHead),
+    ) 
+    model = EfficientViTSeg(backbone, head)
+    
+    return model 
+ 
+
 def efficientvit_seg_b2(**kwargs):
     from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b2
     from efficientvit.models.efficientvit.seg import EfficientViTSeg
@@ -68,9 +98,12 @@ def train_efficientvit_segmentation(
     # Ensure checkpoint directory exists
     os.makedirs(checkpoint_dir, exist_ok=True)
 
-
-    model = efficientvit_seg_b2(pretrained=False)
-
+    if model_name == 'b2': 
+        model = efficientvit_seg_b2(pretrained=False)
+    elif model_name == 'l2': 
+        model = efficientvit_seg_l2(pretrained=False) 
+    else:
+        raise ValueError(f"Unsupported model name: {model_name}. Choose 'b2' or 'l2'.") 
 
     model.to(device)
 
@@ -91,9 +124,7 @@ def train_efficientvit_segmentation(
             loss = criterion(outputs, masks)
             loss.backward()
             optimizer.step()
-            
-
- 
+         
             running_loss += loss.item()
 
             if batch_idx % log_interval == 0:
