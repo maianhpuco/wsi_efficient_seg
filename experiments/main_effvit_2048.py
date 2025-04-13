@@ -33,11 +33,11 @@ def main(args):
         raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
         # Define transformations
     img_transform = transforms.Compose([
-        transforms.Resize((512, 512)),  # Adjust size as needed
+        # transforms.Resize((512, 512)),  # Adjust size as needed
         transforms.ToTensor(),  
     ])
     mask_transform = transforms.Compose([
-        transforms.Resize((512, 512), interpolation=Image.NEAREST),  # Preserve label values
+        # transforms.Resize((512, 512), interpolation=Image.NEAREST),  # Preserve label values
         # No ToTensor
     ]) 
     # Dataset and DataLoader
@@ -46,7 +46,7 @@ def main(args):
         patch_dir, 
         target_size=2048, # target_size=2048, 
         img_transform=img_transform, 
-        mask_transform=mask_transform
+        mask_transform=None
         )  # Keep 2048x2048
     
     dataloader = DataLoader(
