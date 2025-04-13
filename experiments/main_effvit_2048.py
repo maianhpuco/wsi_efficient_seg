@@ -51,7 +51,7 @@ def main(args):
     
     dataloader = DataLoader(
         dataset,
-        batch_size=4,
+        batch_size=8,
         shuffle=False,
         num_workers=4,
         pin_memory=torch.cuda.is_available()
@@ -103,6 +103,7 @@ if __name__ == "__main__":
     args.checkpoint_dir = config.get('checkpoint_dir')
  
     main(args)
+    
     # [2048 * 2048]
     # -> [512 * 512] -> [1/8] -> ([64 * 64]) 
     
