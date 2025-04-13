@@ -110,3 +110,6 @@ if __name__ == "__main__":
     
     # [2048 * 2048] -> mask [?] 
     
+    
+    # note activate efficient net 
+    
