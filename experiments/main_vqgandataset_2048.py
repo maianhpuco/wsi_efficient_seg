@@ -64,22 +64,24 @@ def main(args):
         )  # Keep 2048x2048
     # dataset = WSIPatch2048Dataset(
       
-    model32x32 = load_vqgan(args.vqgan_logs_dir) 
+    vggan_model32x32 = load_vqgan(args.vqgan_logs_dir) 
+    
     dataset = VQGANIndexedDataset(  
         patch_dir, 
-        vqgan_model=model32x32, 
+        vqgan_model=vggan_model32x32, 
         target_size=2048, 
         patch_size=256, 
         stride=256, 
         img_transform=None, 
         mask_transform=None
     )
-    for patch_list in dataset:
-        print("patch_list: ", (len(patch_list))) 
-        for img, mask in patch_list: 
-            print("img shape: ", img.shape)
-            print("mask shape: ", mask.shape)
-        break
+    
+    for vq_patches in dataset:
+        print(len(vq_patches))
+        print(vq_patches[0].shape)
+        print(vq_patches[1].shape) 
+        break 
+
 
     # dataloader = DataLoader(
     #     dataset,
