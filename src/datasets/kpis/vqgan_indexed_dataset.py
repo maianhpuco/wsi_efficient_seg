@@ -33,14 +33,14 @@ class VQGANIndexedDataset(Dataset):
         self.target_size = target_size
         self.img_transform = img_transform
         self.mask_transform = mask_transform
-
+        self.patch_size = patch_size
+        self.stride = stride  
         # Gather image paths
         self.image_paths = sorted(glob(os.path.join(patch_dir, "**/*_img.png"), recursive=True))
         if not self.image_paths:
             raise ValueError(f"No image patches found in {patch_dir}")
         print(f"Loaded {len(self.image_paths)} patches from {patch_dir}")
-        self.patch_size = self.patch_size
-        self.stride = stride 
+
         
     def __len__(self):
         return len(self.image_paths)
