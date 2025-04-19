@@ -89,8 +89,8 @@ def main(args):
     for vq_patches in dataset:
         print(len(vq_patches))
         for img_index_vector, mask_index_vector in vq_patches:
-            print(img_index_vector)
-            print(mask_index_vector) 
+            print(np.unique(img_index_vector))
+            print(np.unique(mask_index_vector))
             
         break 
 
