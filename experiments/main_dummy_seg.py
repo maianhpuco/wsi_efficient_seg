@@ -1,10 +1,12 @@
 import os
+import sys
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from typing import Union, Any
-import sys
+
+# Add EfficientViT to import path
 sys.path.append("src/includes/efficientvit")
 
 from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b0
@@ -16,11 +18,9 @@ class Index1DToSegmentation(nn.Module):
     def __init__(self, num_codes: int, num_classes: int, embed_dim: int = 256, **kwargs):
         super().__init__()
         self.embedding = nn.Embedding(num_codes, embed_dim)  # [B, 64] → [B, 64, 256]
-        self.project = nn.Linear(embed_dim, 64 * 64)         # → [B, 64, 4096]
-        self.reshape = lambda x: x.view(-1, 1, 64, 64)        # → [B, 1, 64, 64]
 
-        # Backbone expecting 1 input channel
-        backbone = efficientvit_backbone_b0(in_channels=1, **kwargs)
+        # Backbone expecting input shape: [B, 256, 64, 64]
+        backbone = efficientvit_backbone_b0(in_channels=embed_dim, **kwargs)
 
         head = SegHead(
             fid_list=["stage4", "stage3", "stage2"],
@@ -37,14 +37,15 @@ class Index1DToSegmentation(nn.Module):
         )
 
         self.seg_model = EfficientViTSeg(backbone, head)
-        self.upsample = nn.Upsample(scale_factor=32, mode="bilinear", align_corners=False)
+        self.upsample = nn.Upsample(scale_factor=32, mode="bilinear", align_corners=False)  # 64 → 2048
 
     def forward(self, x):  # x: [B, 64]
-        x = self.embedding(x)                   # [B, 64, 256]
-        x = self.project(x)                     # [B, 64, 4096]
-        x = x.view(x.size(0), 1, 64, 64)        # [B, 1, 64, 64]
-        x = self.seg_model(x)                   # [B, num_classes, 64, 64]
-        return self.upsample(x)                 # [B, num_classes, 2048, 2048]
+        x = self.embedding(x)                     # [B, 64, 256]
+        x = x.view(x.size(0), 8, 8, -1)           # [B, 8, 8, 256]
+        x = x.permute(0, 3, 1, 2).contiguous()    # [B, 256, 8, 8]
+        x = nn.functional.interpolate(x, size=(64, 64), mode='bilinear', align_corners=False)  # [B, 256, 64, 64]
+        x = self.seg_model(x)                     # [B, num_classes, 64, 64]
+        return self.upsample(x)                   # [B, num_classes, 2048, 2048]
 
 
 # Instantiate model
