@@ -17,6 +17,7 @@ from tqdm import tqdm
 from torch.utils.data import Dataset
 import torchvision.transforms.functional as TF
 
+
 class VQGANIndexedDataset(Dataset):
     def __init__(
         self, 
@@ -27,7 +28,7 @@ class VQGANIndexedDataset(Dataset):
         stride=256, 
         img_transform=None, 
         mask_transform=None
-        ):
+    ):
         self.patch_dir = patch_dir
         self.vqgan = vqgan_model
         self.target_size = target_size
@@ -35,87 +36,72 @@ class VQGANIndexedDataset(Dataset):
         self.mask_transform = mask_transform
         self.patch_size = patch_size
         self.stride = stride  
-        # Gather image paths
+
         self.image_paths = sorted(glob(os.path.join(patch_dir, "**/*_img.png"), recursive=True))
         if not self.image_paths:
             raise ValueError(f"No image patches found in {patch_dir}")
         print(f"Loaded {len(self.image_paths)} patches from {patch_dir}")
 
-        
     def __len__(self):
         return len(self.image_paths)
     
-    def split_patches(self, img, mask):
+    def split_patches(self, img_np, mask_np):
         '''
-        input: img: [C, H, W]
-        output: patches: [N, C, P, P]
+        img_np: [H, W, C] numpy array
+        mask_np: [H, W] numpy array
+        Yields: [3, P, P] tensor, [P, P] tensor
         '''
-         # Calculate expected patches
-        h, w = img.size[:2]
-        x_slide = (h - self.patch_size) // self.stride + 1
-        y_slide = (w - self.patch_size) // self.stride + 1
-        expected_patches = x_slide * y_slide
+        H, W = img_np.shape[:2]
+        x_slide = (H - self.patch_size) // self.stride + 1
+        y_slide = (W - self.patch_size) // self.stride + 1
 
-        # Subfolder and WSI ID for saving patches
-        # subfolder = os.path.dirname(img_path).split("/")[-1]
-        # wsi_id = os.path.basename(img_path).replace("_wsi.tiff", "")
-        # save_path = os.path.join(save_dir, subfolder, wsi_id)
-        # os.makedirs(save_path, exist_ok=True)
-
-        # Extract patches and count actual patches written
-        actual_patches = 0
-        with tqdm(total=expected_patches, desc=f"Extracting patches") as pbar:
+        with tqdm(total=x_slide * y_slide, desc=f"Extracting patches") as pbar:
             for xi in range(x_slide):
                 for yi in range(y_slide):
-                    now_x = xi * self.stride if xi != x_slide - 1 else h - self.patch_size
-                    now_y = yi * self.stride if yi != y_slide - 1 else w - self.patch_size
+                    x = xi * self.stride if xi != x_slide - 1 else H - self.patch_size
+                    y = yi * self.stride if yi != y_slide - 1 else W - self.patch_size
 
-                    # Extract image patch
-                    img_patch = img[now_x:now_x + self.patch_size, now_y:now_y + self.patch_size, :]
+                    img_patch = img_np[x:x + self.patch_size, y:y + self.patch_size, :]
+                    mask_patch = mask_np[x:x + self.patch_size, y:y + self.patch_size]
+
                     assert img_patch.shape == (self.patch_size, self.patch_size, 3)
-
-                    # Extract mask patch
-                    mask_patch = mask[now_x:now_x + self.patch_size, now_y:now_y + self.patch_size]
                     assert mask_patch.shape == (self.patch_size, self.patch_size)
-                    yield img_patch, mask_patch 
-                    actual_patches += 1
-                    pbar.update(1) 
-                    
-                    
+
+                    # Convert to tensor
+                    img_tensor = TF.to_tensor(Image.fromarray(img_patch))
+                    mask_tensor = torch.from_numpy(mask_patch).long()
+
+                    if self.img_transform:
+                        img_tensor = self.img_transform(img_tensor)
+                    if self.mask_transform:
+                        mask_tensor = self.mask_transform(mask_tensor)
+
+                    pbar.update(1)
+                    yield img_tensor, mask_tensor
+
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
         mask_path = img_path.replace("_img.png", "_mask.png")
 
-        # Load image and mask (PIL)
+        # Load as PIL and resize
         img = Image.open(img_path).convert("RGB")
         mask = Image.open(mask_path).convert("L")
 
-        # Convert mask to NumPy and remap 255 → 1
+        if img.size != (self.target_size, self.target_size):
+            img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
+            mask = TF.resize(mask, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST)
+
+        # Convert to NumPy
+        img_np = np.array(img)
         mask_np = np.array(mask, dtype=np.uint8)
         mask_np[mask_np == 255] = 1
-        mask = Image.fromarray(mask_np)
-        
-        if img.size != (self.target_size, self.target_size):
-            # print("yessss")
-            img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
-            mask = TF.resize(mask, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST) 
-        
-        for patch_img, patch_mask in self.split_patches(img, mask):
-            print(patch_img.shape, patch_mask.shape) 
-            break 
-        return patch_img, patch_mask
-        
-        
-        
-    
-        
-        # # Encode image using VQGAN
-        # with torch.no_grad():
-        #     z = self.vqgan.encoder(img_tensor)
-        #     z_q, indices, _ = self.vqgan.codebook(z)
 
-        # # Reshape indices and embeddings
-        # indices = indices.view(z_q.shape[2], z_q.shape[3])  # [H, W]
-        # embeddings = self.vqgan.codebook.embedding(indices)  # [H, W, C]
+        # Yield all patches as a list (or use custom collate for DataLoader)
+        patch_list = []
+        for patch_img, patch_mask in self.split_patches(img_np, mask_np):
+            patch_list.append((patch_img, patch_mask))
+            # if you want all, don't break
+            # break  # Uncomment if you want only one patch for now
 
-        # return indices.cpu(), embeddings.cpu(), os.path.basename(img_path)
+        return patch_list
+ 
