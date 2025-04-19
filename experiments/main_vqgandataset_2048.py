@@ -67,24 +67,31 @@ def main(args):
         img_transform=img_transform, 
         mask_transform=None
         )
+    
+    
+    #--------------------------config VQGAN model-------------------------- 
         
     config32x32 = load_config(
         f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
-    vggan_model32x32 = load_vqgan(
+    vqgan_model = load_vqgan(
         config32x32, 
         ckpt_path=f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
         is_gumbel=True).to(DEVICE)  
 
-    
+    #--------------------------load dataset--------------------------  
     dataset = VQGANIndexedDataset(  
         patch_dir, 
-        vqgan_model=vggan_model32x32, 
+        vqgan_model=vqgan_model, 
         target_size=2048, 
         patch_size=256, 
         stride=256, 
         img_transform=None, 
         mask_transform=None
     )
+    # Access the codebook embedding weights
+    codebook = vqgan_model.codebook.embedding.weight  # Shape: [num_codes, embedding_dim]
+    print("---codebook shape:", codebook.shape)  # Example: (16384, 256) 
+    # codebook = dataset.vqgan.get_codebook_entry(0)
     
     for vq_patches in dataset:
         print(len(vq_patches))
