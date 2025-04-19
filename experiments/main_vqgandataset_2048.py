@@ -83,7 +83,7 @@ def main(args):
     vqgan_model = load_vqgan(
         config32x32, 
         ckpt_path=f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
-        is_gumbel=True).to(DEVICE)  
+        is_gumbel=args.is_gumbel).to(DEVICE)  
     # if we are usign VQModel, then 
     if args.is_gumbel: 
         codebook = vqgan_model.quantize.embedding  # nn.Conv2d
