@@ -66,9 +66,10 @@ def main(args):
         target_size=512, # target_size=2048, 
         img_transform=img_transform, 
         mask_transform=None
-        )  # Keep 2048x2048
-    # dataset = WSIPatch2048Dataset(
-    config32x32 = load_config(f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
+        )
+        
+    config32x32 = load_config(
+        f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
     vggan_model32x32 = load_vqgan(
         config32x32, 
         ckpt_path=f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
@@ -87,8 +88,8 @@ def main(args):
     
     for vq_patches in dataset:
         print(len(vq_patches))
-        print(vq_patches[0].shape)
-        print(vq_patches[1].shape) 
+        print(len(vq_patches[0]))
+        print(len(vq_patches[1]))
         break 
 
 if __name__ == "__main__":
