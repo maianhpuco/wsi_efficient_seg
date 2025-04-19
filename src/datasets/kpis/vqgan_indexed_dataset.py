@@ -118,6 +118,3 @@ class VQGANIndexedDataset(Dataset):
         # embeddings = self.vqgan.codebook.embedding(indices)  # [H, W, C]
 
         # return indices.cpu(), embeddings.cpu(), os.path.basename(img_path)
-
-if __name__=='__main__':
-    
