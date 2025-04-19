@@ -98,7 +98,7 @@ def main(args):
         for img_index_vector, mask_index_vector in vq_patches:
             print(np.unique(img_index_vector))
             print(np.unique(mask_index_vector))
-            
+            break
         break 
 
 if __name__ == "__main__":
