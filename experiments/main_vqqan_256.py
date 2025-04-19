@@ -10,7 +10,6 @@ import io
 
 import PIL
 from PIL import Image
-import numpy as np
 import torch.nn.functional as F
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
