@@ -57,6 +57,9 @@ def main(args):
         img_transform=None, 
         mask_transform=None
     )
+    for patch_img, patch_mask in dataset:
+        print("Patch image shape:", patch_img.shape) 
+        print("Patch mask shape:", patch_mask.shape) 
     # dataloader = DataLoader(
     #     dataset,
     #     batch_size=1,

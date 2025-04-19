@@ -102,7 +102,8 @@ class VQGANIndexedDataset(Dataset):
         
         for patch_img, patch_mask in self.split_patches(img, mask):
             print(patch_img.shape, patch_mask.shape) 
-            break     
+            break 
+        return patch_img, patch_mask
         
         
         
