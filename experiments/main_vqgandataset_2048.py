@@ -140,6 +140,6 @@ if __name__ == "__main__":
         raise KeyError(f"Missing required config keys: {missing_keys}")
  
     args.vqgan_logs_dir = config.get('vqgan_logs_dir') 
-    args.is_gumbel = False  
+    args.is_gumbel = True  
     
     main(args)
