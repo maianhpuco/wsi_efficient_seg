@@ -73,6 +73,7 @@ class WSIPatch2048Dataset(Dataset):
         mask = Image.fromarray(mask_np)
         print("mask shape:", mask.size)
         print("img shape:", img.size)
+        
         # Conditional resizing to target_size if needed
         if img.size != (self.target_size, self.target_size):
             print("yessss")
@@ -90,7 +91,7 @@ class WSIPatch2048Dataset(Dataset):
             mask = self.mask_transform(mask)
         else:
             # Resize mask to model output size (e.g., 64x64) if needed
-            mask = TF.resize(mask, [64, 64], interpolation=TF.InterpolationMode.NEAREST)
+            # mask = TF.resize(mask, [64, 64], interpolation=TF.InterpolationMode.NEAREST)
             mask = torch.as_tensor(np.array(mask), dtype=torch.long)
 
         filename = os.path.basename(img_path)
