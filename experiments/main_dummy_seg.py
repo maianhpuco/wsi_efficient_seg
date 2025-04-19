@@ -57,5 +57,6 @@ model = Index1DToSegmentation(
 
 if __name__ == "__main__":
     indices = torch.randint(0, 1024, (1, 64))  # 1D vector input: [B, 64]
+    print("Input indices shape:", indices.shape)
     output_mask = model(indices)              # [1, 2, 2048, 2048]
     print("Output mask shape:", output_mask.shape)
