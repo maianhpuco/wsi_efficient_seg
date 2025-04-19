@@ -67,6 +67,7 @@ def main(args):
         # transforms.Resize((512, 512), interpolation=Image.NEAREST),  # Preserve label values
         # No ToTensor
     ]) 
+    # torch.Size([8192, 256]) 
     # Dataset and DataLoader
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
     dataset = VQGANIndexedDataset(
