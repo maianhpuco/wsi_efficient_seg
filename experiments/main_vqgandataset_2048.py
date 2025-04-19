@@ -44,8 +44,15 @@ def load_vqgan(config, ckpt_path=None, is_gumbel=False):
         sd = torch.load(ckpt_path, map_location="cpu")["state_dict"]
         missing, unexpected = model.load_state_dict(sd, strict=False)
     return model.eval()
+# if we are usign VQModel, then 
+# codebook = vqgan_model.quantize.embedding  # nn.Embedding
+# codebook_weights = codebook.weight    
+# # [n_embed, embed_dim]
+# codebook = vqgan_model.quantize.embedding  # nn.Conv2d
+# codebook_weights = codebook.weight         # [n_embed, embed_dim, 1, 1]
+# codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  # → [n_embed, embed_dim]
  
-
+ 
 def main(args):
     # Validate train_test_val
     if args.train_test_val not in ["train", "test", "val"]:
@@ -77,7 +84,17 @@ def main(args):
         config32x32, 
         ckpt_path=f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
         is_gumbel=True).to(DEVICE)  
+    # if we are usign VQModel, then 
+    if args.is_gumbel: 
+        codebook = vqgan_model.quantize.embedding  # nn.Conv2d
+        codebook_weights = codebook.weight         # [n_embed, embed_dim, 1, 1]
+        codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  # → [n_embed, embed_dim]
+    else: 
+        codebook = vqgan_model.quantize.embedding  # nn.Embedding
+        codebook_weights = codebook.weight         # [n_embed, embed_dim]
 
+    print("codebook weights:", codebook_weights.shape)
+    
     #--------------------------load dataset--------------------------  
     dataset = VQGANIndexedDataset(  
         patch_dir, 
@@ -123,6 +140,6 @@ if __name__ == "__main__":
         raise KeyError(f"Missing required config keys: {missing_keys}")
  
     args.vqgan_logs_dir = config.get('vqgan_logs_dir') 
-    
+    args.is_gumbel = False  
     
     main(args)
