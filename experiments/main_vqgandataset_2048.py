@@ -86,9 +86,8 @@ def main(args):
         is_gumbel=args.is_gumbel).to(DEVICE)  
     # if we are usign VQModel, then 
     if args.is_gumbel: 
-        codebook = vqgan_model.quantize.embedding  # nn.Conv2d
-        codebook_weights = codebook.weight         # [n_embed, embed_dim, 1, 1]
-        codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  # → [n_embed, embed_dim]
+        codebook_weights = vqgan_model.quantize.codebook.weight  # shape: [n_embed, embed_dim, 1, 1]
+        codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  
     else: 
         codebook = vqgan_model.quantize.embedding  # nn.Embedding
         codebook_weights = codebook.weight         # [n_embed, embed_dim]
