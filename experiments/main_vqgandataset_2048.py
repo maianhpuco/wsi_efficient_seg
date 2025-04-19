@@ -82,33 +82,10 @@ def main(args):
         print(vq_patches[1].shape) 
         break 
 
-
-    # dataloader = DataLoader(
-    #     dataset,
-    #     batch_size=1,
-    #     shuffle=False,
-    #     num_workers=4,
-    #     pin_memory=torch.cuda.is_available()
-    # )
-
-    
-    # # Iterate over batches
-    # for batch_idx, (img, mask, filename) in enumerate(tqdm(dataloader, desc="Reading patches")):
-    #     # print("Image file name:", filename)
-    #     img = img.to(DEVICE)  # Shape: [batch_size, 3, 2048, 2048]
-    #     mask = mask.to(DEVICE)  # Shape: [batch_size, 1, 2048, 2048]
-        
-    #     print("Check shape of image and mask")
-    #     print("img shape: ", img.shape)
-    #     print("mask shape: ", mask.shape)
-        
-    #     break  # Remove this if you want to process all batches
-
-
 if __name__ == "__main__":
     # Argument parser
     parser = argparse.ArgumentParser(description="Process WSI patches")
-    parser.add_argument("--config", type=str, default="configs/main_effvit.yaml", help="Path to YAML config file")
+    parser.add_argument("--config", type=str, default="configs/main_vqgandataset_2024.yaml", help="Path to YAML config file")
     parser.add_argument("--data_config", type=str, default="configs/kpis.yaml", help="Path to data YAML config file")
     parser.add_argument("--train_test_val", type=str, default="train", help="Specify train/test/val")
     
@@ -126,6 +103,7 @@ if __name__ == "__main__":
     if missing_keys:
         raise KeyError(f"Missing required config keys: {missing_keys}")
  
-    args.checkpoint_dir = config.get('checkpoint_dir')
-    args.vqgan_logs_dir = config.get('vqgan_logs_dir')  
+    args.vqgan_logs_dir = config.get('vqgan_logs_dir') 
+    
+    
     main(args)
