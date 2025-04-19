@@ -14,7 +14,7 @@ import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from typing import Union, Any
-
+from omegaconf import OmegaConf 
 # Add project root to sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
@@ -24,7 +24,22 @@ from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 print(f"DEVICE: {DEVICE}")
+
+def load_config(config_path, display=False):
+    config = OmegaConf.load(config_path)
+    if display:
+        print(yaml.dump(OmegaConf.to_container(config)))
+    return config 
+
+def load_vqgan(vqgan_logs_dir):
+    config32x32 = load_config(f"{vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
+    _model32x32 = load_vqgan(
+        config32x32, 
+        ckpt_path=f"{vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
+        is_gumbel=True).to(DEVICE) 
+    return _model32x32 
 
 def main(args):
     # Validate train_test_val
@@ -48,9 +63,11 @@ def main(args):
         mask_transform=None
         )  # Keep 2048x2048
     # dataset = WSIPatch2048Dataset(
+      
+    model32x32 = load_vqgan(args.vqgan_logs_dir) 
     dataset = VQGANIndexedDataset(  
         patch_dir, 
-        vqgan_model=None, 
+        vqgan_model=model32x32, 
         target_size=2048, 
         patch_size=256, 
         stride=256, 
@@ -108,5 +125,5 @@ if __name__ == "__main__":
         raise KeyError(f"Missing required config keys: {missing_keys}")
  
     args.checkpoint_dir = config.get('checkpoint_dir')
- 
+    args.vqgan_logs_dir = config.get('vqgan_logs_dir')  
     main(args)
