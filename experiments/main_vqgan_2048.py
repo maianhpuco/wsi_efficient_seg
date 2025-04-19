@@ -19,8 +19,7 @@ from typing import Union, Any
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
-from src.datasets.kpis.patch_2048_2048 import WSIPatch2048Dataset 
-from tools.kpis.train_effvit import train_efficientvit_segmentation 
+from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 
 
 # Device setup
@@ -42,46 +41,43 @@ def main(args):
     ]) 
     # Dataset and DataLoader
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
-    dataset = WSIPatch2048Dataset(
+    dataset = VQGANIndexedDataset(
         patch_dir, 
         target_size=512, # target_size=2048, 
         img_transform=img_transform, 
         mask_transform=None
         )  # Keep 2048x2048
-    
-    
-    dataloader = DataLoader(
-        dataset,
-        batch_size=1,
-        shuffle=False,
-        num_workers=4,
-        pin_memory=torch.cuda.is_available()
+    # dataset = WSIPatch2048Dataset(
+    dataset = VQGANIndexedDataset(  
+        patch_dir, 
+        vqgan_model=None, 
+        target_size=2048, 
+        patch_size=256, 
+        stride=256, 
+        img_transform=None, 
+        mask_transform=None
     )
+    # dataloader = DataLoader(
+    #     dataset,
+    #     batch_size=1,
+    #     shuffle=False,
+    #     num_workers=4,
+    #     pin_memory=torch.cuda.is_available()
+    # )
 
     
-    # Iterate over batches
-    for batch_idx, (img, mask, filename) in enumerate(tqdm(dataloader, desc="Reading patches")):
-        # print("Image file name:", filename)
-        img = img.to(DEVICE)  # Shape: [batch_size, 3, 2048, 2048]
-        mask = mask.to(DEVICE)  # Shape: [batch_size, 1, 2048, 2048]
+    # # Iterate over batches
+    # for batch_idx, (img, mask, filename) in enumerate(tqdm(dataloader, desc="Reading patches")):
+    #     # print("Image file name:", filename)
+    #     img = img.to(DEVICE)  # Shape: [batch_size, 3, 2048, 2048]
+    #     mask = mask.to(DEVICE)  # Shape: [batch_size, 1, 2048, 2048]
         
-        print("Check shape of image and mask")
-        print("img shape: ", img.shape)
-        print("mask shape: ", mask.shape)
+    #     print("Check shape of image and mask")
+    #     print("img shape: ", img.shape)
+    #     print("mask shape: ", mask.shape)
         
-        break  # Remove this if you want to process all batches
-    
-    train_efficientvit_segmentation(
-        dataloader,
-        model_name = 'l2',
-        dataset_name = 'kpis',
-        num_epochs = 10,
-        learning_rate = 0.001,
-        device = DEVICE,
-        checkpoint_dir= args.checkpoint_dir,
-        log_interval = 10
-    )
-    print("Done training")
+    #     break  # Remove this if you want to process all batches
+
 
 if __name__ == "__main__":
     # Argument parser
@@ -107,14 +103,3 @@ if __name__ == "__main__":
     args.checkpoint_dir = config.get('checkpoint_dir')
  
     main(args)
-    
-    # [2048 * 2048]
-    # -> [512 * 512] -> [1/8] -> ([64 * 64]) 
-    
-    # evaluation
-    
-    # [2048 * 2048] -> mask [?] 
-    
-    
-    # note activate efficient net 
-    
