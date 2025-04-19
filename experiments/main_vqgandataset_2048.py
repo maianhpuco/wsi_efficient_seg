@@ -40,6 +40,7 @@ def load_vqgan(config, ckpt_path=None, is_gumbel=False):
         model = GumbelVQ(**config.model.params)
     else:
         model = VQModel(**config.model.params)
+        
     if ckpt_path is not None:
         sd = torch.load(ckpt_path, map_location="cpu")["state_dict"]
         missing, unexpected = model.load_state_dict(sd, strict=False)
@@ -86,11 +87,13 @@ def main(args):
         is_gumbel=args.is_gumbel).to(DEVICE)  
     # if we are usign VQModel, then 
     if args.is_gumbel: 
-        codebook_weights = vqgan_model.quantize.codebook.weight  # shape: [n_embed, embed_dim, 1, 1]
-        codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  
-    else: 
-        codebook = vqgan_model.quantize.embedding  # nn.Embedding
-        codebook_weights = codebook.weight         # [n_embed, embed_dim]
+        codebook_weights = vqgan_model.quantize.embed  # shape: [n_embed, embed_dim]
+ 
+    #     codebook_weights = vqgan_model.quantize.codebook.weight  # shape: [n_embed, embed_dim, 1, 1]
+    #     codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  
+    # else: 
+    #     codebook = vqgan_model.quantize.embedding  # nn.Embedding
+    #     codebook_weights = codebook.weight         # [n_embed, embed_dim]
 
     print("codebook weights:", codebook_weights.shape)
     
