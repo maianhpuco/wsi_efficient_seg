@@ -1,4 +1,13 @@
+import os
 import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from typing import Union, Any
+import sys
+sys.path.append("src/includes/efficientvit") 
+
+
 import torch.nn as nn
 from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b0
 from efficientvit.models.efficientvit.seg import EfficientViTSeg, SegHead
