@@ -71,12 +71,12 @@ class WSIPatch2048Dataset(Dataset):
         mask_np = np.array(mask, dtype=np.uint8)
         mask_np[mask_np == 255] = 1
         mask = Image.fromarray(mask_np)
-        print("mask shape:", mask.size)
-        print("img shape:", img.size)
+        # print("mask shape:", mask.size)
+        # print("img shape:", img.size)
         
         # Conditional resizing to target_size if needed
         if img.size != (self.target_size, self.target_size):
-            print("yessss")
+            # print("yessss")
             img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
             mask = TF.resize(mask, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST)
 
