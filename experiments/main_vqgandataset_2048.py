@@ -87,7 +87,7 @@ def main(args):
         is_gumbel=args.is_gumbel).to(DEVICE)  
     # if we are usign VQModel, then 
     if args.is_gumbel: 
-        codebook_weights = vqgan_model.quantize.embed  # shape: [n_embed, embed_dim]
+        codebook_weights = vqgan_model.quantize.embed.weight # shape: [n_embed, embed_dim]
  
     #     codebook_weights = vqgan_model.quantize.codebook.weight  # shape: [n_embed, embed_dim, 1, 1]
     #     codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  
