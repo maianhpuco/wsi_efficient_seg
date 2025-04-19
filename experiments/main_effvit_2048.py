@@ -33,7 +33,7 @@ def main(args):
         raise ValueError("train_test_val must be one of 'train', 'test', or 'val'")
         # Define transformations
     img_transform = transforms.Compose([
-        # transforms.Resize((512, 512)),  # Adjust size as needed
+        # transforms.Resize((512, 512)),  # Adjust size as needed 
         transforms.ToTensor(),  
     ])
     mask_transform = transforms.Compose([
@@ -44,7 +44,7 @@ def main(args):
     patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
     dataset = WSIPatch2048Dataset(
         patch_dir, 
-        target_size=2048, # target_size=2048, 
+        target_size=1024, # target_size=2048, 
         img_transform=img_transform, 
         mask_transform=None
         )  # Keep 2048x2048
