@@ -15,6 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from typing import Union, Any
 from omegaconf import OmegaConf 
+from taming.models.vqgan import VQModel, GumbelVQ
 # Add project root to sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
@@ -33,13 +34,17 @@ def load_config(config_path, display=False):
         print(yaml.dump(OmegaConf.to_container(config)))
     return config 
 
-def load_vqgan(vqgan_logs_dir):
-    config32x32 = load_config(f"{vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
-    _model32x32 = load_vqgan(
-        config32x32, 
-        ckpt_path=f"{vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
-        is_gumbel=True).to(DEVICE) 
-    return _model32x32 
+
+def load_vqgan(config, ckpt_path=None, is_gumbel=False):
+    if is_gumbel:
+        model = GumbelVQ(**config.model.params)
+    else:
+        model = VQModel(**config.model.params)
+    if ckpt_path is not None:
+        sd = torch.load(ckpt_path, map_location="cpu")["state_dict"]
+        missing, unexpected = model.load_state_dict(sd, strict=False)
+    return model.eval()
+ 
 
 def main(args):
     # Validate train_test_val
@@ -63,8 +68,12 @@ def main(args):
         mask_transform=None
         )  # Keep 2048x2048
     # dataset = WSIPatch2048Dataset(
-      
-    vggan_model32x32 = load_vqgan(args.vqgan_logs_dir) 
+    config32x32 = load_config(f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/configs/model.yaml", display=False)
+    vggan_model32x32 = load_vqgan(
+        config32x32, 
+        ckpt_path=f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
+        is_gumbel=True).to(DEVICE)  
+
     
     dataset = VQGANIndexedDataset(  
         patch_dir, 
