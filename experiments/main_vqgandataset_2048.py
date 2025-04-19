@@ -107,10 +107,6 @@ def main(args):
         img_transform=None, 
         mask_transform=None
     )
-    # Access the codebook embedding weights
-    codebook = vqgan_model.codebook.embedding.weight  # Shape: [num_codes, embedding_dim]
-    print("---codebook shape:", codebook.shape)  # Example: (16384, 256) 
-    # codebook = dataset.vqgan.get_codebook_entry(0)
     
     for vq_patches in dataset:
         print(len(vq_patches))
