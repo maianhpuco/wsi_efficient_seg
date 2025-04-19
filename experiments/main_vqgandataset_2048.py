@@ -88,8 +88,10 @@ def main(args):
     
     for vq_patches in dataset:
         print(len(vq_patches))
-        print(len(vq_patches[0]))
-        print(len(vq_patches[1]))
+        for img_index_vector, mask_index_vector in vq_patches:
+            print(img_index_vector)
+            print(mask_index_vector) 
+            
         break 
 
 if __name__ == "__main__":
