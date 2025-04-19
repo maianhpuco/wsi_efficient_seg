@@ -51,7 +51,7 @@ class VQGANIndexedDataset(Dataset):
         output: patches: [N, C, P, P]
         '''
          # Calculate expected patches
-        h, w = img.shape[:2]
+        h, w = img.size[:2]
         x_slide = (h - self.patch_size) // self.stride + 1
         y_slide = (w - self.patch_size) // self.stride + 1
         expected_patches = x_slide * y_slide
