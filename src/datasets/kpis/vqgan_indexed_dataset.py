@@ -100,6 +100,7 @@ class VQGANIndexedDataset(Dataset):
         patch_list = []
         for patch_img, patch_mask in self.split_patches(img_np, mask_np):
             patch_list.append((patch_img, patch_mask))
+    
             # if you want all, don't break
             # break  # Uncomment if you want only one patch for now
 
