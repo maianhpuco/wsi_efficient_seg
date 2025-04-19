@@ -74,6 +74,7 @@ class WSIPatch2048Dataset(Dataset):
 
             # Conditional resizing to target_size if needed
             if img.size != (self.target_size, self.target_size):
+                print("yesssssss")
                 img = TF.resize(img, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.BILINEAR)
                 mask = TF.resize(mask, [self.target_size, self.target_size], interpolation=TF.InterpolationMode.NEAREST)
 
