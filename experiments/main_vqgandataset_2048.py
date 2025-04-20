@@ -20,8 +20,9 @@ from taming.models.vqgan import VQModel, GumbelVQ
 # Add project root to sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
+print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "taming-transformers", "taming"))
-print(f"Project root added to sys.path: {PROJECT_ROOT}")
+
 sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "efficientvit")) 
 
 import sys
