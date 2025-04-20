@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from typing import Union, Any
 project_dir = os.environ.get("PROJECT_DIR")
+print(f"Project root added to sys.path: {project_dir}")
 sys.path.append(os.path.join(project_dir, "src", "includes"))
 sys.path.append(os.path.join(project_dir, "src", "includes", "efficientvit"))
  
