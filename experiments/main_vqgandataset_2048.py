@@ -22,6 +22,9 @@ sys.path.append(PROJECT_ROOT)
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 
+# Instantiate model
+from src.models.efficientvit import Index1DToSegmentation 
+
 
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -45,15 +48,8 @@ def load_vqgan(config, ckpt_path=None, is_gumbel=False):
         sd = torch.load(ckpt_path, map_location="cpu")["state_dict"]
         missing, unexpected = model.load_state_dict(sd, strict=False)
     return model.eval()
-# if we are usign VQModel, then 
-# codebook = vqgan_model.quantize.embedding  # nn.Embedding
-# codebook_weights = codebook.weight    
-# # [n_embed, embed_dim]
-# codebook = vqgan_model.quantize.embedding  # nn.Conv2d
-# codebook_weights = codebook.weight         # [n_embed, embed_dim, 1, 1]
-# codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  # → [n_embed, embed_dim]
- 
- 
+
+
 def main(args):
     # Validate train_test_val
     if args.train_test_val not in ["train", "test", "val"]:
@@ -109,11 +105,22 @@ def main(args):
         mask_transform=None
     )
     
+    #---- get model--- 
     for vq_patches in dataset:
         print(len(vq_patches))
         for img_index_vector, mask_index_vector in vq_patches:
             print(np.unique(img_index_vector))
             print(np.unique(mask_index_vector))
+        
+            model.train() 
+            model = Index1DToSegmentation( # this is just untrained model, can be replace by trained model 
+                num_codes=1024,
+                num_classes=2,
+                embed_dim=256
+            )
+            
+            model.to(DEVICE) 
+            
             break
         break 
 
