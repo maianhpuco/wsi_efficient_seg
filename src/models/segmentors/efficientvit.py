@@ -2,8 +2,6 @@ import os
 import sys
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader
 from typing import Union, Any
 
 # Add EfficientViT to import path
@@ -55,6 +53,7 @@ if __name__ == "__main__":
                 num_classes=2,
                 embed_dim=256
             ) 
+    
     indices = torch.randint(0, 1024, (1, 64))  # 1D vector input: [B, 64]
     print("Input indices shape:", indices.shape)
     output_mask = model(indices)              # [1, 2, 2048, 2048]
