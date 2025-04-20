@@ -30,7 +30,6 @@ from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 # from src.models.segmentors.efficientvit_model import Index1DToSegmentation 
 
 #---------------- this part will be moved to a seperate file ---------------- 
-
 import torch.nn as nn 
 from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b0
 from efficientvit.models.efficientvit.seg import EfficientViTSeg, SegHead
@@ -71,8 +70,6 @@ class Index1DToSegmentation(nn.Module):
         return self.upsample(x)                   # [B, num_classes, 64, 64] s 
 
 #------------------------------------------------------------------------------
-
-
 # Device setup
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -112,14 +109,13 @@ def main(args):
     ]) 
     # torch.Size([8192, 256]) 
     # Dataset and DataLoader
-    patch_dir = config[f"{args.train_test_val}_wsi_processed_patch_save_dir"]
+    patch_dir = config[f"{args.train_test_val}_wsi_procWritingessed_patch_save_dir"]
     dataset = VQGANIndexedDataset(
         patch_dir, 
         target_size=512, # target_size=2048, 
         img_transform=img_transform, 
         mask_transform=None
         )
-    
     
     #--------------------------config VQGAN model-------------------------- 
         
@@ -130,6 +126,7 @@ def main(args):
         ckpt_path=f"{args.vqgan_logs_dir}/vqgan_gumbel_f8/checkpoints/last.ckpt", 
         is_gumbel=args.is_gumbel).to(DEVICE)  
     # if we are usign VQModel, then 
+    
     if args.is_gumbel: 
         codebook_weights = vqgan_model.quantize.embed.weight # shape: [n_embed, embed_dim]
 
@@ -154,7 +151,7 @@ def main(args):
             # print(np.unique(mask_index_vector))
             print("img_index_vector shape: ", img_index_vector.shape)
             print("mask_index_vector shape: ", mask_index_vector.shape)         
-            model.train() 
+    
             model = Index1DToSegmentation( # this is just untrained model, can be replace by trained model 
                 num_codes=1024,
                 num_classes=2,
