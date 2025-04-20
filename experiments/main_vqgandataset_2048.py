@@ -27,7 +27,7 @@ sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "taming-transforme
 from taming.models.vqgan import VQModel, GumbelVQ
 sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "efficientvit")) 
 from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
-from src.models.segmentors.efficientvit import Index1DToSegmentation 
+# from src.models.segmentors.efficientvit_model import Index1DToSegmentation 
 
 #---------------- this part will be moved to a seperate file ---------------- 
 
