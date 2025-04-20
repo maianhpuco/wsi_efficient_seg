@@ -8,10 +8,10 @@ from typing import Union, Any
 
 # Add EfficientViT to import path
 sys.path.append("src/includes/efficientvit")
+
 from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b0
 from efficientvit.models.efficientvit.seg import EfficientViTSeg, SegHead
 from efficientvit.models.utils import build_kwargs_from_config
-
 
 class Index1DToSegmentation(nn.Module):
     def __init__(self, num_codes: int, num_classes: int, embed_dim: int = 256, **kwargs):
@@ -49,6 +49,12 @@ class Index1DToSegmentation(nn.Module):
 
 
 if __name__ == "__main__":
+    
+    model = Index1DToSegmentation( # this is just untrained model, can be replace by trained model 
+                num_codes=1024,
+                num_classes=2,
+                embed_dim=256
+            ) 
     indices = torch.randint(0, 1024, (1, 64))  # 1D vector input: [B, 64]
     print("Input indices shape:", indices.shape)
     output_mask = model(indices)              # [1, 2, 2048, 2048]
