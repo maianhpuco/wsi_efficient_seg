@@ -157,6 +157,7 @@ def main(args):
                 num_classes=2,
                 embed_dim=256
             )
+            model.train()
             model = model.to(DEVICE)  
             output_quantized_mask = model(img_index_vector) 
             print("output_quantized_mask shape: ", output_quantized_mask.shape) 
