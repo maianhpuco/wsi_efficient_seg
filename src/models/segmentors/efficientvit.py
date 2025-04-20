@@ -3,9 +3,12 @@ import sys
 import torch
 import torch.nn as nn
 from typing import Union, Any
-
+project_dir = os.environ.get("PROJECT_DIR")
+sys.path.append(os.path.join(project_dir, "src", "includes"))
+sys.path.append(os.path.join(project_dir, "src", "includes", "efficientvit"))
+ 
 # Add EfficientViT to import path
-sys.path.append("src/includes")
+sys.path.append("src/includes/efficientvit")
 
 from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b0
 from efficientvit.models.efficientvit.seg import EfficientViTSeg, SegHead
