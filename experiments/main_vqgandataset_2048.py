@@ -20,6 +20,8 @@ from taming.models.vqgan import VQModel, GumbelVQ
 # Add project root to sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
+sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "taming"))
+sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "efficientvit")) 
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 from src.models.segmentors.efficientvit import Index1DToSegmentation 
