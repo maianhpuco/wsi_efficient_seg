@@ -16,14 +16,16 @@ from torchvision import transforms
 from typing import Union, Any
 from omegaconf import OmegaConf 
 from taming.models.vqgan import VQModel, GumbelVQ
+
 # Add project root to sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
+
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 
 # Instantiate model
-from src.models.efficientvit import Index1DToSegmentation 
+from src.models.segmentors.efficientvit import Index1DToSegmentation 
 
 
 # Device setup
@@ -85,12 +87,6 @@ def main(args):
     # if we are usign VQModel, then 
     if args.is_gumbel: 
         codebook_weights = vqgan_model.quantize.embed.weight # shape: [n_embed, embed_dim]
- 
-    #     codebook_weights = vqgan_model.quantize.codebook.weight  # shape: [n_embed, embed_dim, 1, 1]
-    #     codebook_weights = codebook_weights.squeeze(-1).squeeze(-1)  
-    # else: 
-    #     codebook = vqgan_model.quantize.embedding  # nn.Embedding
-    #     codebook_weights = codebook.weight         # [n_embed, embed_dim]
 
     print("codebook weights:", codebook_weights.shape)
     
@@ -118,8 +114,9 @@ def main(args):
                 num_classes=2,
                 embed_dim=256
             )
+        
             
-            model.to(DEVICE) 
+            model = model.to(DEVICE) 
             
             break
         break 
