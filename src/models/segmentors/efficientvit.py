@@ -5,7 +5,7 @@ import torch.nn as nn
 from typing import Union, Any
 
 # Add EfficientViT to import path
-sys.path.append("src/includes/efficientvit")
+sys.path.append("src/includes")
 
 from efficientvit.models.efficientvit.backbone import efficientvit_backbone_b0
 from efficientvit.models.efficientvit.seg import EfficientViTSeg, SegHead
