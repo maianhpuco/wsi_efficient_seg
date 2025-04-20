@@ -23,12 +23,9 @@ sys.path.append(PROJECT_ROOT)
 print(f"Project root added to sys.path: {PROJECT_ROOT}") 
 
 sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "taming-transformers"))
-sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "taming-transformers", "taming"))
-sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "efficientvit")) 
-from taming.models.vqgan import VQModel, GumbelVQ
 
-sys.path.append("src/includes/taming-transformers")  # Adjust as needed 
-print(f"Project root added to sys.path: {PROJECT_ROOT}") 
+from taming.models.vqgan import VQModel, GumbelVQ
+sys.path.append(os.path.join(PROJECT_ROOT, "src", "includes", "efficientvit")) 
 from src.datasets.kpis.vqgan_indexed_dataset import  VQGANIndexedDataset
 from src.models.segmentors.efficientvit import Index1DToSegmentation 
 
